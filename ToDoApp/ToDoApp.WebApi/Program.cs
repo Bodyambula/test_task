@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using ToDoApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 2. Реєструємо AppDbContext в контейнере залежностей (Dependency Injection)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 

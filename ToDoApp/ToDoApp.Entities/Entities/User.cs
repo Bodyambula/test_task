@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDoApp.Entities.Entities
 {
-    public class User : BaseEntity
+    public class User : BaseEntity, ISoftDelete
     {
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
@@ -14,5 +14,8 @@ namespace ToDoApp.Entities.Entities
 
         public ICollection<Category> Categories { get; set; } = new List<Category>();
         public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }
