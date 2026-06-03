@@ -1,4 +1,4 @@
-﻿namespace ToDoApp.Entities
+﻿namespace ClassLibrary1
 {
     public class Class1
     {
