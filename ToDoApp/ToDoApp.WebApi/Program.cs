@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ToDoApp.Data;
 using ToDoApp.Entities.Interfaces;
 using ToDoApp.Data.Repositories;
+using ToDoApp.Services.Interfaces;
+using ToDoApp.Services.Implementations;
+using ToDoApp.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
+// Реєстрація бізнес-сервісів та сервісів безпеки
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

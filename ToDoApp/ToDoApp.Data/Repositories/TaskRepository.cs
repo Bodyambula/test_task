@@ -26,5 +26,36 @@ namespace ToDoApp.Data.Repositories
         {
             return await _dbSet.Where(t => t.CategoryId == categoryId).ToListAsync(cancellationToken);
         }
+
+        public async Task<(IEnumerable<TaskItem> Items, int TotalCount)> GetPagedAsync(
+            int userId, 
+            int page, 
+            int pageSize, 
+            bool? isCompleted, 
+            int? categoryId, 
+            CancellationToken cancellationToken = default)
+        {
+            var query = _dbSet.Include(t => t.Category).Where(t => t.UserId == userId);
+
+            if (isCompleted.HasValue)
+            {
+                query = query.Where(t => t.IsCompleted == isCompleted.Value);
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(t => t.CategoryId == categoryId.Value);
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return (items, totalCount);
+        }
     }
 }
