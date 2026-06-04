@@ -15,6 +15,7 @@ namespace ToDoApp.Entities.Interfaces
             int pageSize, 
             bool? isCompleted, 
             int? categoryId, 
+            string? search,
             CancellationToken cancellationToken = default);
     }
 }

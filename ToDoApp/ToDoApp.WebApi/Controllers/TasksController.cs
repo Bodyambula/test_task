@@ -46,10 +46,11 @@ namespace ToDoApp.WebApi.Controllers
             [FromQuery] int pageSize = 10,
             [FromQuery] bool? isCompleted = null,
             [FromQuery] int? categoryId = null,
+            [FromQuery] string? search = null,
             CancellationToken cancellationToken = default)
         {
             var result = await _taskService.GetPagedAsync(
-                CurrentUserId, page, pageSize, isCompleted, categoryId, cancellationToken);
+                CurrentUserId, page, pageSize, isCompleted, categoryId, search, cancellationToken);
             return Ok(result);
         }
 

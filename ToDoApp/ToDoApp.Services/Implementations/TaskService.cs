@@ -82,6 +82,7 @@ namespace ToDoApp.Services.Implementations
             int pageSize, 
             bool? isCompleted, 
             int? categoryId, 
+            string? search,
             CancellationToken cancellationToken = default)
         {
             if (page < 1) page = 1;
@@ -97,7 +98,7 @@ namespace ToDoApp.Services.Implementations
             }
 
             var (items, totalCount) = await _unitOfWork.Tasks.GetPagedAsync(
-                userId, page, pageSize, isCompleted, categoryId, cancellationToken);
+                userId, page, pageSize, isCompleted, categoryId, search, cancellationToken);
 
             return new TaskPagedResultDto
             {

@@ -1,0 +1,504 @@
+<div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row overflow-x-hidden font-sans">
+  <!-- Glowing background elements -->
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <!-- Sidebar -->
+  <aside class="w-full md:w-80 bg-slate-900/60 backdrop-blur-xl border-b md:border-b-0 md:border-r border-slate-800 flex flex-col z-20 shrink-0">
+    <!-- Sidebar Header / Logo -->
+    <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">Bodyambula</h1>
+        <p class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Task Manager</p>
+      </div>
+    </div>
+
+    <!-- User Info Section -->
+    <div class="p-6 border-b border-slate-800 flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-indigo-400 uppercase">
+          {{ userName().substring(0, 2) }}
+        </div>
+        <div class="overflow-hidden">
+          <h4 class="font-semibold text-white truncate text-sm">{{ userName() }}</h4>
+          <p class="text-xs text-slate-400 truncate">{{ userEmail() }}</p>
+        </div>
+      </div>
+      <button 
+        (click)="logout()" 
+        class="w-full flex items-center justify-center gap-2 bg-slate-800/50 hover:bg-red-500/10 hover:text-red-400 border border-slate-700/50 hover:border-red-500/20 text-slate-300 font-medium py-2 px-4 rounded-xl transition-all duration-200 text-xs cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+        </svg>
+        Вийти
+      </button>
+    </div>
+
+    <!-- Categories Section -->
+    <div class="flex-1 p-6 flex flex-col min-h-0">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Категорії</h3>
+        <button 
+          (click)="isAddingCategory.set(!isAddingCategory())" 
+          class="text-indigo-400 hover:text-indigo-300 transition-colors p-1 rounded-lg hover:bg-slate-800"
+          title="Додати категорію"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Add Category Inline Form -->
+      <div *ngIf="isAddingCategory()" class="mb-4 space-y-2 animate-fade-in">
+        <div class="flex gap-2">
+          <input 
+            type="text" 
+            [value]="newCategoryName()"
+            (input)="newCategoryName.set($any($event.target).value)"
+            placeholder="Назва категорії" 
+            class="flex-1 bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500"
+            (keyup.enter)="createCategory()"
+          />
+          <button 
+            (click)="createCategory()" 
+            class="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-3 py-1.5 text-xs font-semibold cursor-pointer"
+          >
+            ОК
+          </button>
+        </div>
+        <p *ngIf="categoryError()" class="text-red-400 text-[10px] pl-1">{{ categoryError() }}</p>
+      </div>
+
+      <!-- Categories List -->
+      <div class="space-y-1 overflow-y-auto max-h-[300px] pr-1 flex-1">
+        <!-- All Categories Button -->
+        <button 
+          (click)="onCategorySelect(null)" 
+          class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-sm transition-all duration-200 cursor-pointer"
+          [ngClass]="selectedCategoryId() === null ? 'bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 font-semibold' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'"
+        >
+          <span class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+            Всі категорії
+          </span>
+        </button>
+
+        <!-- Dynamic Categories -->
+        <button 
+          *ngFor="let cat of categories()" 
+          (click)="onCategorySelect(cat.id)" 
+          class="group w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-sm transition-all duration-200 border border-transparent cursor-pointer"
+          [ngClass]="selectedCategoryId() === cat.id ? 'bg-indigo-600/10 text-indigo-400 border-indigo-500/20 font-semibold' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'"
+        >
+          <span class="flex items-center gap-2 truncate">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-600 group-hover:bg-indigo-400 transition-colors"></span>
+            <span class="truncate">{{ cat.name }}</span>
+          </span>
+          <button 
+            (click)="deleteCategory(cat.id, $event)" 
+            class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-all p-1 rounded-md hover:bg-slate-700/50 cursor-pointer"
+            title="Видалити категорію"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+          </button>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col min-w-0 p-6 md:p-10 relative z-10 overflow-y-auto">
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+      <div>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Панель завдань</h2>
+        <p class="text-slate-400 mt-1 font-medium">Привіт, {{ userName() }}! Управляйте своїми щоденними справами.</p>
+      </div>
+      <button 
+        (click)="openCreateTaskModal()" 
+        class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-5 rounded-2xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-300 transform active:scale-[0.98] cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Нове завдання
+      </button>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+      <!-- Total Tasks Card -->
+      <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 relative overflow-hidden shadow-lg">
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-indigo-500/10 rounded-full blur-xl"></div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Всі завдання</span>
+          <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-3.75 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+          </span>
+        </div>
+        <div class="text-3xl font-black text-white">{{ isStatsLoading() ? '...' : statTotal() }}</div>
+      </div>
+
+      <!-- Completed Tasks Card -->
+      <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 relative overflow-hidden shadow-lg">
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl"></div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Виконані</span>
+          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+        </div>
+        <div class="text-3xl font-black text-white">{{ isStatsLoading() ? '...' : statCompleted() }}</div>
+      </div>
+
+      <!-- Pending Tasks Card -->
+      <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 relative overflow-hidden shadow-lg">
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl"></div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">В процесі</span>
+          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+        </div>
+        <div class="text-3xl font-black text-white">{{ isStatsLoading() ? '...' : statPending() }}</div>
+      </div>
+
+      <!-- Completion Rate Card -->
+      <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 relative overflow-hidden shadow-lg">
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-purple-500/10 rounded-full blur-xl"></div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Ефективність</span>
+          <span class="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+            </svg>
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-3xl font-black text-white">{{ isStatsLoading() ? '...' : statRate() }}%</div>
+          <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+              [style.width.%]="isStatsLoading() ? 0 : statRate()"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters, Search & View Controls -->
+    <section class="backdrop-blur-xl bg-slate-900/40 border border-slate-800/60 rounded-3xl p-4 md:p-6 mb-6 flex flex-col lg:flex-row justify-between items-center gap-4">
+      <!-- Search Input -->
+      <div class="w-full lg:max-w-md relative">
+        <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </span>
+        <input 
+          type="text" 
+          [value]="searchQuery()"
+          (input)="onSearchChange($event)"
+          placeholder="Пошук завдань за назвою..." 
+          class="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl pl-12 pr-4 py-2.5 text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+        />
+      </div>
+
+      <!-- Filters Tabs -->
+      <div class="flex items-center gap-1.5 bg-slate-950/80 p-1 border border-slate-800 rounded-2xl w-full lg:w-auto overflow-x-auto">
+        <button 
+          (click)="onStatusSelect(null)" 
+          class="flex-1 lg:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
+          [ngClass]="selectedStatus() === null ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+        >
+          Всі
+        </button>
+        <button 
+          (click)="onStatusSelect(false)" 
+          class="flex-1 lg:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
+          [ngClass]="selectedStatus() === false ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+        >
+          Активні
+        </button>
+        <button 
+          (click)="onStatusSelect(true)" 
+          class="flex-1 lg:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
+          [ngClass]="selectedStatus() === true ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+        >
+          Виконані
+        </button>
+      </div>
+    </section>
+
+    <!-- Tasks Grid -->
+    <section class="flex-1 flex flex-col">
+      <!-- Loading indicator -->
+      <div *ngIf="isTasksLoading()" class="flex flex-col items-center justify-center py-20 flex-1">
+        <svg class="animate-spin h-10 w-10 text-indigo-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-slate-400 text-sm">Оновлення списку завдань...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isTasksLoading() && tasks().length === 0" class="backdrop-blur-xl bg-slate-900/30 border border-dashed border-slate-800 rounded-3xl p-10 md:p-16 flex flex-col items-center justify-center text-center flex-1">
+        <div class="w-20 h-20 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m1.875-12h7.5M21 7.5h-7.5M3 6h1.5m1.5 0H18m-15 3h1.5m1.5 0H18m-15 3h1.5m1.5 0H15m-12 3h1.5m1.5 0H15m-12 3h1.5m1.5 0H15" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Завдань не знайдено</h3>
+        <p class="text-slate-400 max-w-sm mb-6 text-sm">Немає жодного завдання, яке б відповідало обраним фільтрам. Створіть нове завдання, щоб почати.</p>
+        <button 
+          (click)="openCreateTaskModal()" 
+          class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-5 rounded-xl text-sm transition-all cursor-pointer"
+        >
+          Створити завдання
+        </button>
+      </div>
+
+      <!-- Task cards grid -->
+      <div *ngIf="!isTasksLoading() && tasks().length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div 
+          *ngFor="let task of tasks()" 
+          class="backdrop-blur-xl bg-slate-900/50 border rounded-3xl p-5 flex flex-col justify-between transition-all duration-300 hover:border-slate-700/80 hover:-translate-y-1 shadow-lg"
+          [ngClass]="task.isCompleted ? 'border-slate-800/80 opacity-70' : 'border-slate-800'"
+        >
+          <!-- Task Header -->
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <!-- Category Badge -->
+            <span 
+              *ngIf="task.category" 
+              class="px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
+            >
+              {{ task.category.name }}
+            </span>
+            <span *ngIf="!task.category" class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Без категорії</span>
+
+            <!-- Status Checkbox -->
+            <button 
+              (click)="toggleTaskCompletion(task)" 
+              class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all cursor-pointer"
+              [ngClass]="task.isCompleted ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'border-slate-700 hover:border-slate-500 text-transparent'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Title & Description -->
+          <div class="flex-1 mb-4">
+            <h4 
+              class="text-lg font-bold text-white leading-tight mb-2 truncate"
+              [ngClass]="{'line-through text-slate-500': task.isCompleted}"
+            >
+              {{ task.title }}
+            </h4>
+            <p 
+              class="text-sm text-slate-400 line-clamp-3"
+              [ngClass]="{'text-slate-600': task.isCompleted}"
+            >
+              {{ task.description || 'Немає опису' }}
+            </p>
+          </div>
+
+          <!-- Footer/Date & Actions -->
+          <div class="border-t border-slate-800/80 pt-4 flex items-center justify-between gap-4">
+            <!-- Due Date Badge -->
+            <div class="flex items-center gap-1.5 text-xs">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              <span *ngIf="task.dueDate" class="text-slate-400 font-medium">
+                {{ task.dueDate | date:'dd.MM.yyyy' }}
+              </span>
+              <span *ngIf="!task.dueDate" class="text-slate-600 font-medium italic">
+                Без дати
+              </span>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-1">
+              <button 
+                (click)="openEditTaskModal(task)" 
+                class="p-2 rounded-lg bg-slate-800/50 hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-400 border border-slate-700/30 hover:border-indigo-500/20 transition-all cursor-pointer"
+                title="Редагувати завдання"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 20.013a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+              </button>
+              <button 
+                (click)="deleteTask(task.id)" 
+                class="p-2 rounded-lg bg-slate-800/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 border border-slate-700/30 hover:border-red-500/20 transition-all cursor-pointer"
+                title="Видалити завдання"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination Footer -->
+      <footer *ngIf="!isTasksLoading() && totalTasksCount() > pageSize()" class="mt-8 flex justify-between items-center bg-slate-900/20 border border-slate-800/60 p-4 rounded-3xl">
+        <p class="text-xs text-slate-500 font-semibold">
+          Показано {{ tasks().length }} з {{ totalTasksCount() }} завдань
+        </p>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Prev button -->
+          <button 
+            (click)="onPageChange(currentPage() - 1)" 
+            [disabled]="currentPage() === 1"
+            class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+
+          <!-- Current Page Info -->
+          <span class="text-xs font-bold text-slate-300 px-3">
+            Сторінка {{ currentPage() }} з {{ MathCeil(totalTasksCount() / pageSize()) }}
+          </span>
+
+          <!-- Next button -->
+          <button 
+            (click)="onPageChange(currentPage() + 1)" 
+            [disabled]="currentPage() >= MathCeil(totalTasksCount() / pageSize())"
+            class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<!-- Task Create / Edit Modal -->
+<div *ngIf="isTaskModalOpen()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
+  <div class="relative w-full max-w-lg backdrop-blur-xl bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-zoom-in">
+    <!-- Close icon -->
+    <button 
+      (click)="closeTaskModal()" 
+      class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-800"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Modal Title -->
+    <h3 class="text-2xl font-extrabold text-white mb-6">
+      {{ editingTaskId() ? 'Редагувати завдання' : 'Створити нове завдання' }}
+    </h3>
+
+    <!-- Task Form -->
+    <form [formGroup]="taskForm" (ngSubmit)="saveTask()" class="space-y-5">
+      <!-- Title Input -->
+      <div class="space-y-1">
+        <label for="taskTitle" class="block text-sm font-medium text-slate-300">Назва завдання</label>
+        <input 
+          id="taskTitle" 
+          type="text" 
+          formControlName="title"
+          placeholder="Наприклад: Пройти технічне інтерв'ю"
+          class="w-full bg-slate-950 border text-white rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200"
+          [ngClass]="{
+            'border-red-500/50 focus:border-red-500 focus:ring-red-500/20': taskForm.get('title')?.invalid && taskForm.get('title')?.touched,
+            'border-slate-800 hover:border-slate-700 focus:border-indigo-500': !(taskForm.get('title')?.invalid && taskForm.get('title')?.touched)
+          }"
+        />
+        <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-red-400 text-xs mt-1 pl-1">
+          <span *ngIf="taskForm.get('title')?.errors?.['required']">Назва завдання є обов'язковою</span>
+          <span *ngIf="taskForm.get('title')?.errors?.['maxlength']">Назва не може бути довшою за 100 символів</span>
+        </div>
+      </div>
+
+      <!-- Description Input -->
+      <div class="space-y-1">
+        <label for="taskDesc" class="block text-sm font-medium text-slate-300">Опис завдання</label>
+        <textarea 
+          id="taskDesc" 
+          rows="3"
+          formControlName="description"
+          placeholder="Деталі завдання..."
+          class="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors"
+        ></textarea>
+        <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="text-red-400 text-xs mt-1 pl-1">
+          <span *ngIf="taskForm.get('description')?.errors?.['maxlength']">Опис не може бути довшим за 500 символів</span>
+        </div>
+      </div>
+
+      <!-- Two Column Inputs (Category & Due Date) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Category Select -->
+        <div class="space-y-1">
+          <label for="taskCat" class="block text-sm font-medium text-slate-300">Категорія</label>
+          <select 
+            id="taskCat" 
+            formControlName="categoryId"
+            class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors cursor-pointer"
+          >
+            <option value="">Без категорії</option>
+            <option *ngFor="let cat of categories()" [value]="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Due Date -->
+        <div class="space-y-1">
+          <label for="taskDueDate" class="block text-sm font-medium text-slate-300">Виконати до</label>
+          <input 
+            id="taskDueDate" 
+            type="date" 
+            formControlName="dueDate"
+            class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-800/80">
+        <button 
+          type="button" 
+          (click)="closeTaskModal()"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 px-5 rounded-2xl text-sm transition-all cursor-pointer"
+        >
+          Скасувати
+        </button>
+        <button 
+          type="submit"
+          class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-5 rounded-2xl text-sm shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
+        >
+          Зберегти
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

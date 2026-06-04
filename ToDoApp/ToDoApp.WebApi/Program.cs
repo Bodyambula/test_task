@@ -33,6 +33,18 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+// Налаштування CORS політики для підключення Angular фронтенду
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Адреса розробки Angular
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // Налаштування JWT Bearer авторизації
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "a_very_long_and_secure_default_secret_key_for_todoapp_project_2026";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "ToDoApp";
@@ -78,6 +90,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Підключення CORS перед Authentication та Authorization
+app.UseCors("AllowAngularDev");
 
 app.UseAuthentication();
 app.UseAuthorization();

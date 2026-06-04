@@ -1,0 +1,122 @@
+<div class="relative min-h-screen flex items-center justify-center bg-slate-950 px-4 py-12 overflow-hidden">
+  <!-- Glowing Background Orbs -->
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] animate-pulse"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s;"></div>
+
+  <div class="relative w-full max-w-md z-10">
+    <!-- Card Container with Glassmorphism -->
+    <div class="backdrop-blur-xl bg-slate-900/70 border border-slate-800 rounded-3xl p-8 md:p-10 shadow-2xl shadow-slate-950/50">
+      
+      <!-- Logo/Title -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-7 h-7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Вхід в систему</h2>
+        <p class="text-slate-400 mt-2 font-medium">Раді бачити вас знову!</p>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="errorMessage()" class="mb-6 flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-red-200 text-sm animate-fade-in">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-red-400 shrink-0">
+          <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+        </svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Email Input -->
+        <div class="space-y-1">
+          <label for="email" class="block text-sm font-medium text-slate-300">Email</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 17.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+            </span>
+            <input 
+              id="email" 
+              type="email" 
+              formControlName="email"
+              placeholder="example@mail.com"
+              class="w-full bg-slate-950/50 border text-white rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200"
+              [ngClass]="{
+                'border-red-500/50 focus:border-red-500 focus:ring-red-500/20': loginForm.get('email')?.invalid && loginForm.get('email')?.touched,
+                'border-slate-800 hover:border-slate-700 focus:border-indigo-500': !(loginForm.get('email')?.invalid && loginForm.get('email')?.touched)
+              }"
+            />
+          </div>
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-red-400 text-xs mt-1 pl-1">
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">Введіть email</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Некоректний формат email</span>
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="space-y-1">
+          <label for="password" class="block text-sm font-medium text-slate-300">Пароль</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </span>
+            <input 
+              id="password" 
+              type="password" 
+              formControlName="password"
+              placeholder="••••••••"
+              class="w-full bg-slate-950/50 border text-white rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200"
+              [ngClass]="{
+                'border-red-500/50 focus:border-red-500 focus:ring-red-500/20': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
+                'border-slate-800 hover:border-slate-700 focus:border-indigo-500': !(loginForm.get('password')?.invalid && loginForm.get('password')?.touched)
+              }"
+            />
+          </div>
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-400 text-xs mt-1 pl-1">
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">Введіть пароль</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Пароль має містити щонайменше 6 символів</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          [disabled]="isLoading()"
+          class="w-full relative flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-2xl shadow-lg shadow-indigo-500/20 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+        >
+          <span *ngIf="!isLoading()">Увійти</span>
+          <span *ngIf="isLoading()" class="flex items-center gap-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Завантаження...
+          </span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+          <div class="w-full border-t border-slate-800"></div>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+          <span class="bg-slate-900 px-3 text-slate-500 font-semibold tracking-wider">або</span>
+        </div>
+      </div>
+
+      <!-- Registration link -->
+      <div class="text-center">
+        <p class="text-slate-400 text-sm font-medium">
+          Немає облікового запису? 
+          <a routerLink="/register" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors duration-200 cursor-pointer ml-1 hover:underline">Створити акаунт</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
