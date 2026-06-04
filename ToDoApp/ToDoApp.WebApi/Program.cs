@@ -1,17 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoApp.Data;
+using ToDoApp.Entities.Interfaces;
+using ToDoApp.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// 2. �������� AppDbContext � ���������� ����������� (Dependency Injection)
+// Реєстрація AppDbContext в контейнері залежностей (Dependency Injection)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Add services to the container.
+// Реєстрація загальних паттернів Repository та Unit of Work
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Реєстрація конкретних репозиторіїв
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
+// Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
