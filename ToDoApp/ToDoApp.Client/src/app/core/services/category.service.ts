@@ -8,7 +8,7 @@ import { Category, CreateCategoryModel } from '../models/todo.models';
 })
 export class CategoryService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5280/api/categories';
+  private apiUrl = 'http://localhost:8081/api/categories';
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiUrl);

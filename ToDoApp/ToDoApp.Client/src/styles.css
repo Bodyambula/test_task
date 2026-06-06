@@ -55,8 +55,13 @@
   background: rgba(148, 163, 184, 0.2);
 }
 
-/* Custom styles for native date picker in dark mode */
+/* Custom styles for native date picker in light mode */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.9) sepia(0.1) saturate(1) hue-rotate(200deg);
   cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.8;
 }

@@ -9,55 +9,60 @@ using ToDoApp.Entities.Interfaces;
 
 namespace ToDoApp.Data.Repositories
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity>
+        where TEntity : class
     {
-        protected readonly AppDbContext _context;
-        protected readonly DbSet<TEntity> _dbSet;
+        private readonly AppDbContext _context;
 
         public BaseRepository(AppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _dbSet = _context.Set<TEntity>();
+            DbSet = _context.Set<TEntity>();
         }
+
+        protected DbSet<TEntity> DbSet { get; }
 
         public virtual async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
+            return await DbSet.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.ToListAsync(cancellationToken);
+            return await DbSet.ToListAsync(cancellationToken);
         }
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+            return await DbSet.Where(predicate).ToListAsync(cancellationToken);
         }
 
         public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddAsync(entity, cancellationToken);
+            await DbSet.AddAsync(entity, cancellationToken);
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddRangeAsync(entities, cancellationToken);
+            await DbSet.AddRangeAsync(entities, cancellationToken);
         }
 
         public virtual void Update(TEntity entity)
         {
-            _dbSet.Update(entity);
+            DbSet.Update(entity);
         }
 
+        // WARNING: If the entity type implements ISoftDelete, these methods will not physically
+        // delete the records from the database. Instead, AppDbContext intercepts the operation
+        // and transitions the entity to Modified state with IsDeleted set to true.
         public virtual void Delete(TEntity entity)
         {
-            _dbSet.Remove(entity);
+            DbSet.Remove(entity);
         }
 
         public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
-            _dbSet.RemoveRange(entities);
+            DbSet.RemoveRange(entities);
         }
     }
 }

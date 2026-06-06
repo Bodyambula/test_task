@@ -10,7 +10,7 @@ import { AuthResponse, LoginModel, RegisterModel } from '../models/todo.models';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:5280/api/auth';
+  private apiUrl = 'http://localhost:8081/api/auth';
 
   // Signals for auth state
   private currentUserSignal = signal<AuthResponse | null>(null);

@@ -10,13 +10,14 @@ namespace ToDoApp.Data.Repositories
 {
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(AppDbContext context) : base(context)
+        public CategoryRepository(AppDbContext context)
+            : base(context)
         {
         }
 
         public async Task<IEnumerable<Category>> GetByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(c => c.UserId == userId).ToListAsync(cancellationToken);
+            return await DbSet.Where(c => c.UserId == userId).ToListAsync(cancellationToken);
         }
     }
 }

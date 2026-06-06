@@ -19,11 +19,18 @@ export class RegisterComponent {
   errorMessage = signal<string | null>(null);
   isSuccess = signal<boolean>(false);
 
+  passwordMatchValidator(control: any) {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
+
   registerForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(50)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]]
-  });
+    password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this.passwordMatchValidator });
 
   onSubmit(): void {
     if (this.registerForm.invalid) {

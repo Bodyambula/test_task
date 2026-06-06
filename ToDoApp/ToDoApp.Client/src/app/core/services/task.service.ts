@@ -8,7 +8,7 @@ import { Task, CreateTaskModel, UpdateTaskModel, TaskPagedResult } from '../mode
 })
 export class TaskService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5280/api/tasks';
+  private apiUrl = 'http://localhost:8081/api/tasks';
 
   getTasks(
     page: number = 1,

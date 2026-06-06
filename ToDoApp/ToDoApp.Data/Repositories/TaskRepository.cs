@@ -10,13 +10,14 @@ namespace ToDoApp.Data.Repositories
 {
     public class TaskRepository : BaseRepository<TaskItem>, ITaskRepository
     {
-        public TaskRepository(AppDbContext context) : base(context)
+        public TaskRepository(AppDbContext context)
+            : base(context)
         {
         }
 
         public async Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            return await _dbSet
+            return await DbSet
                 .Include(t => t.Category)
                 .Where(t => t.UserId == userId)
                 .ToListAsync(cancellationToken);
@@ -24,19 +25,19 @@ namespace ToDoApp.Data.Repositories
 
         public async Task<IEnumerable<TaskItem>> GetByCategoryIdAsync(int categoryId, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(t => t.CategoryId == categoryId).ToListAsync(cancellationToken);
+            return await DbSet.Where(t => t.CategoryId == categoryId).ToListAsync(cancellationToken);
         }
 
         public async Task<(IEnumerable<TaskItem> Items, int TotalCount)> GetPagedAsync(
-            int userId, 
-            int page, 
-            int pageSize, 
-            bool? isCompleted, 
-            int? categoryId, 
+            int userId,
+            int page,
+            int pageSize,
+            bool? isCompleted,
+            int? categoryId,
             string? search,
             CancellationToken cancellationToken = default)
         {
-            var query = _dbSet.Include(t => t.Category).Where(t => t.UserId == userId);
+            var query = DbSet.Include(t => t.Category).Where(t => t.UserId == userId);
 
             if (isCompleted.HasValue)
             {
@@ -51,7 +52,7 @@ namespace ToDoApp.Data.Repositories
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
-                query = query.Where(t => t.Title.ToLower().Contains(lowerSearch) || 
+                query = query.Where(t => t.Title.ToLower().Contains(lowerSearch) ||
                                          t.Description.ToLower().Contains(lowerSearch));
             }
 

@@ -10,6 +10,8 @@ namespace ToDoApp.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
+
+        // Caches instantiated repositories to ensure a single instance is reused within the Unit of Work scope.
         private readonly ConcurrentDictionary<Type, object> _repositories;
         private bool _disposed;
 
@@ -20,10 +22,13 @@ namespace ToDoApp.Data.Repositories
         }
 
         public IUserRepository Users => (IUserRepository)_repositories.GetOrAdd(typeof(IUserRepository), _ => new UserRepository(_context));
+
         public ICategoryRepository Categories => (ICategoryRepository)_repositories.GetOrAdd(typeof(ICategoryRepository), _ => new CategoryRepository(_context));
+
         public ITaskRepository Tasks => (ITaskRepository)_repositories.GetOrAdd(typeof(ITaskRepository), _ => new TaskRepository(_context));
 
-        public IBaseRepository<TEntity> Repository<TEntity>() where TEntity : class
+        public IBaseRepository<TEntity> Repository<TEntity>()
+            where TEntity : class
         {
             return (IBaseRepository<TEntity>)_repositories.GetOrAdd(typeof(TEntity), _ => new BaseRepository<TEntity>(_context));
         }
@@ -47,6 +52,7 @@ namespace ToDoApp.Data.Repositories
                 {
                     _context.Dispose();
                 }
+
                 _disposed = true;
             }
         }
