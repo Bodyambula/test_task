@@ -28,11 +28,19 @@ export class ThemeService {
 
   private applyTheme(theme: Theme): void {
     const root = document.documentElement;
+
+    // Enable smooth transition only during theme switch
+    root.classList.add('theme-transition');
+
     if (theme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
+
+    // Remove the transition class after animation completes to avoid
+    // performance overhead on normal interactions
+    setTimeout(() => root.classList.remove('theme-transition'), 350);
   }
 
   private getInitialTheme(): Theme {

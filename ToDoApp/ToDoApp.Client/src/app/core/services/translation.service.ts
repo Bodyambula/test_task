@@ -1,6 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { uk } from '../translations/uk';
-import { en } from '../translations/en';
+import { Injectable, signal } from '@angular/core';
 
 export type Language = 'uk' | 'en';
 
@@ -10,17 +8,35 @@ export type Language = 'uk' | 'en';
 export class TranslationService {
   private readonly STORAGE_KEY = 'todo_app_lang';
   
-  currentLang = signal<Language>(this.getInitialLanguage());
+  currentLang = signal<Language>('en');
+  translations = signal<any>({});
 
-  translations = computed(() => {
-    return this.currentLang() === 'uk' ? uk : en;
-  });
+  async initLanguage(): Promise<void> {
+    const initialLang = this.getInitialLanguage();
+    await this.loadTranslations(initialLang);
+    this.currentLang.set(initialLang);
+    document.documentElement.lang = initialLang;
+  }
 
-  setLanguage(lang: Language): void {
+  async setLanguage(lang: Language): Promise<void> {
     localStorage.setItem(this.STORAGE_KEY, lang);
+    await this.loadTranslations(lang);
     this.currentLang.set(lang);
-    // Update html lang attribute for accessibility and SEO
     document.documentElement.lang = lang;
+  }
+
+  private async loadTranslations(lang: Language): Promise<void> {
+    try {
+      if (lang === 'uk') {
+        const module = await import('../translations/uk');
+        this.translations.set(module.uk);
+      } else {
+        const module = await import('../translations/en');
+        this.translations.set(module.en);
+      }
+    } catch (err) {
+      console.error(`Failed to load translations for ${lang}`, err);
+    }
   }
 
   // Translates a dotted path key, e.g. 'auth.login.title'
@@ -52,16 +68,12 @@ export class TranslationService {
   private getInitialLanguage(): Language {
     const saved = localStorage.getItem(this.STORAGE_KEY);
     if (saved === 'uk' || saved === 'en') {
-      document.documentElement.lang = saved;
       return saved;
     }
     
     // Auto-detect browser language
     const browserLang = navigator.language || '';
     const isUk = browserLang.toLowerCase().includes('uk') || browserLang.toLowerCase().includes('ua');
-    const initial = isUk ? 'uk' : 'en';
-    
-    document.documentElement.lang = initial;
-    return initial;
+    return isUk ? 'uk' : 'en';
   }
 }

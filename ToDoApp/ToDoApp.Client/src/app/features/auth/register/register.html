@@ -34,8 +34,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
           </svg>
         </div>
-        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ 'auth.register.title' | translate:lang() }}</h2>
-        <p class="text-slate-500 mt-2 font-medium">{{ 'auth.register.subtitle' | translate:lang() }}</p>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ 'auth.register.title' | translate }}</h2>
+        <p class="text-slate-500 mt-2 font-medium">{{ 'auth.register.subtitle' | translate }}</p>
       </div>
 
       <!-- Success Alert -->
@@ -44,7 +44,7 @@
           <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.74-5.24z" clip-rule="evenodd" />
         </svg>
         <div>
-          <p class="font-semibold text-emerald-800">{{ 'auth.register.success' | translate:lang() }}</p>
+          <p class="font-semibold text-emerald-800">{{ 'auth.register.success' | translate }}</p>
         </div>
       </div>
 
@@ -60,7 +60,7 @@
       <form *ngIf="!isSuccess()" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
         <!-- Name Input -->
         <div class="space-y-1">
-          <label for="name" class="block text-sm font-medium text-slate-700">{{ 'auth.register.nameLabel' | translate:lang() }}</label>
+          <label for="name" class="block text-sm font-medium text-slate-700">{{ 'auth.register.nameLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -71,7 +71,7 @@
               id="name" 
               type="text" 
               formControlName="name"
-              [placeholder]="'auth.register.namePlaceholder' | translate:lang()"
+              [placeholder]="'auth.register.namePlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': registerForm.get('name')?.invalid && registerForm.get('name')?.touched,
@@ -80,14 +80,14 @@
             />
           </div>
           <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="registerForm.get('name')?.errors?.['required']">{{ 'auth.register.nameRequired' | translate:lang() }}</span>
-            <span *ngIf="registerForm.get('name')?.errors?.['maxlength']">{{ 'auth.register.nameMaxLength' | translate:lang() }}</span>
+            <span *ngIf="registerForm.get('name')?.errors?.['required']">{{ 'auth.register.nameRequired' | translate }}</span>
+            <span *ngIf="registerForm.get('name')?.errors?.['maxlength']">{{ 'auth.register.nameMaxLength' | translate }}</span>
           </div>
         </div>
 
         <!-- Email Input -->
         <div class="space-y-1">
-          <label for="email" class="block text-sm font-medium text-slate-700">{{ 'auth.login.emailLabel' | translate:lang() }}</label>
+          <label for="email" class="block text-sm font-medium text-slate-700">{{ 'auth.login.emailLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -98,7 +98,7 @@
               id="email" 
               type="email" 
               formControlName="email"
-              [placeholder]="'auth.login.emailPlaceholder' | translate:lang()"
+              [placeholder]="'auth.login.emailPlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': registerForm.get('email')?.invalid && registerForm.get('email')?.touched,
@@ -107,14 +107,14 @@
             />
           </div>
           <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="registerForm.get('email')?.errors?.['required']">{{ 'auth.login.emailRequired' | translate:lang() }}</span>
-            <span *ngIf="registerForm.get('email')?.errors?.['email']">{{ 'auth.login.emailInvalid' | translate:lang() }}</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['required']">{{ 'auth.login.emailRequired' | translate }}</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['email']">{{ 'auth.login.emailInvalid' | translate }}</span>
           </div>
         </div>
 
         <!-- Password Input -->
         <div class="space-y-1">
-          <label for="password" class="block text-sm font-medium text-slate-700">{{ 'auth.login.passwordLabel' | translate:lang() }}</label>
+          <label for="password" class="block text-sm font-medium text-slate-700">{{ 'auth.login.passwordLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -125,7 +125,7 @@
               id="password" 
               type="password" 
               formControlName="password"
-              [placeholder]="'auth.login.passwordPlaceholder' | translate:lang()"
+              [placeholder]="'auth.login.passwordPlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': registerForm.get('password')?.invalid && registerForm.get('password')?.touched,
@@ -134,15 +134,15 @@
             />
           </div>
           <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="registerForm.get('password')?.errors?.['required']">{{ 'auth.login.passwordRequired' | translate:lang() }}</span>
-            <span *ngIf="registerForm.get('password')?.errors?.['minlength']">{{ 'auth.login.passwordMinLength' | translate:lang() }}</span>
-            <span *ngIf="registerForm.get('password')?.errors?.['maxlength']">{{ 'auth.register.passwordMaxLength' | translate:lang() }}</span>
+            <span *ngIf="registerForm.get('password')?.errors?.['required']">{{ 'auth.login.passwordRequired' | translate }}</span>
+            <span *ngIf="registerForm.get('password')?.errors?.['minlength']">{{ 'auth.login.passwordMinLength' | translate }}</span>
+            <span *ngIf="registerForm.get('password')?.errors?.['maxlength']">{{ 'auth.register.passwordMaxLength' | translate }}</span>
           </div>
         </div>
 
         <!-- Confirm Password Input -->
         <div class="space-y-1">
-          <label for="confirmPassword" class="block text-sm font-medium text-slate-700">{{ 'auth.register.confirmPasswordLabel' | translate:lang() }}</label>
+          <label for="confirmPassword" class="block text-sm font-medium text-slate-700">{{ 'auth.register.confirmPasswordLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -153,7 +153,7 @@
               id="confirmPassword" 
               type="password" 
               formControlName="confirmPassword"
-              [placeholder]="'auth.register.confirmPasswordPlaceholder' | translate:lang()"
+              [placeholder]="'auth.register.confirmPasswordPlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': (registerForm.get('confirmPassword')?.invalid || registerForm.errors?.['passwordMismatch']) && registerForm.get('confirmPassword')?.touched,
@@ -162,8 +162,8 @@
             />
           </div>
           <div *ngIf="registerForm.get('confirmPassword')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">{{ 'auth.register.confirmPasswordRequired' | translate:lang() }}</span>
-            <span *ngIf="!registerForm.get('confirmPassword')?.errors?.['required'] && registerForm.errors?.['passwordMismatch']">{{ 'auth.register.passwordMismatch' | translate:lang() }}</span>
+            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">{{ 'auth.register.confirmPasswordRequired' | translate }}</span>
+            <span *ngIf="!registerForm.get('confirmPassword')?.errors?.['required'] && registerForm.errors?.['passwordMismatch']">{{ 'auth.register.passwordMismatch' | translate }}</span>
           </div>
         </div>
 
@@ -173,13 +173,13 @@
           [disabled]="isLoading()"
           class="w-full relative flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-2xl shadow-lg shadow-indigo-500/10 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 cursor-pointer"
         >
-          <span *ngIf="!isLoading()">{{ 'auth.register.submit' | translate:lang() }}</span>
+          <span *ngIf="!isLoading()">{{ 'auth.register.submit' | translate }}</span>
           <span *ngIf="isLoading()" class="flex items-center gap-2">
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            {{ 'common.loading' | translate:lang() }}
+            {{ 'common.loading' | translate }}
           </span>
         </button>
       </form>
@@ -197,15 +197,15 @@
           <div class="w-full border-t border-slate-200"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-slate-400 font-semibold tracking-wider">{{ 'common.or' | translate:lang() }}</span>
+          <span class="bg-white px-3 text-slate-400 font-semibold tracking-wider">{{ 'common.or' | translate }}</span>
         </div>
       </div>
 
       <!-- Login link -->
       <div *ngIf="!isSuccess()" class="text-center">
         <p class="text-slate-500 text-sm font-medium">
-          {{ 'auth.register.hasAccount' | translate:lang() }}
-          <a routerLink="/login" class="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors duration-200 cursor-pointer ml-1 hover:underline">{{ 'auth.register.signIn' | translate:lang() }}</a>
+          {{ 'auth.register.hasAccount' | translate }}
+          <a routerLink="/login" class="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors duration-200 cursor-pointer ml-1 hover:underline">{{ 'auth.register.signIn' | translate }}</a>
         </p>
       </div>
 

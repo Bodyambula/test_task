@@ -1,0 +1,103 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-md animate-fade-in" (click)="close()">
+  <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-zoom-in" (click)="$event.stopPropagation()">
+    <!-- Close icon -->
+    <button 
+      (click)="close()" 
+      class="absolute top-6 right-6 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Modal Title -->
+    <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-6">
+      {{ (editingTask ? 'dashboard.modal.editTitle' : 'dashboard.modal.createTitle') | translate }}
+    </h3>
+
+    <!-- Task Form -->
+    <form [formGroup]="taskForm" (ngSubmit)="save()" class="space-y-5">
+      <!-- Title Input -->
+      <div class="space-y-1">
+        <label for="taskTitle" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.titleLabel' | translate }}</label>
+        <input 
+          id="taskTitle" 
+          type="text" 
+          formControlName="title"
+          [placeholder]="'dashboard.modal.titlePlaceholder' | translate"
+          class="w-full bg-slate-50 dark:bg-slate-800 border text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
+          [ngClass]="{
+            'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': taskForm.get('title')?.invalid && taskForm.get('title')?.touched,
+            'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus:border-indigo-500': !(taskForm.get('title')?.invalid && taskForm.get('title')?.touched)
+          }"
+        />
+        <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-red-500 text-xs mt-1 pl-1">
+          <span *ngIf="taskForm.get('title')?.errors?.['required']">{{ 'dashboard.modal.titleRequired' | translate }}</span>
+          <span *ngIf="taskForm.get('title')?.errors?.['maxlength']">{{ 'dashboard.modal.titleMaxLength' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Description Input -->
+      <div class="space-y-1">
+        <label for="taskDesc" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.descLabel' | translate }}</label>
+        <textarea 
+          id="taskDesc" 
+          rows="3"
+          formControlName="description"
+          [placeholder]="'dashboard.modal.descPlaceholder' | translate"
+          class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors"
+        ></textarea>
+        <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="text-red-500 text-xs mt-1 pl-1">
+          <span *ngIf="taskForm.get('description')?.errors?.['maxlength']">{{ 'dashboard.modal.descMaxLength' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Two Column Inputs (Category & Due Date) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Category Select -->
+        <div class="space-y-1">
+          <label for="taskCat" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.categoryLabel' | translate }}</label>
+          <select 
+            id="taskCat" 
+            formControlName="categoryId"
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors cursor-pointer"
+          >
+            <option value="" class="bg-white dark:bg-slate-900">{{ 'common.uncategorized' | translate }}</option>
+            <option *ngFor="let cat of categories" [value]="cat.id" class="bg-white dark:bg-slate-900">
+              {{ cat.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Due Date -->
+        <div class="space-y-1">
+          <label for="taskDueDate" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.dateLabel' | translate }}</label>
+          <input 
+            id="taskDueDate" 
+            type="date" 
+            formControlName="dueDate"
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button 
+          type="button" 
+          (click)="close()"
+          class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2.5 px-5 rounded-2xl text-sm transition-all cursor-pointer"
+        >
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button 
+          type="submit"
+          class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-5 rounded-2xl text-sm shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
+        >
+          {{ 'common.save' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

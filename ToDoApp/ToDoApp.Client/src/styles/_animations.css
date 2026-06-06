@@ -1,0 +1,19 @@
+/* ──────────────────────────────────────────────
+   Standalone keyframes & GPU-promoted layers
+   ────────────────────────────────────────────── */
+
+@keyframes loading-bar {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* GPU-promoted layers for animated background blobs */
+.animate-float-slow,
+.animate-float-slower {
+  will-change: transform;
+  contain: strict;
+}

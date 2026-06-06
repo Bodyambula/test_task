@@ -1,0 +1,61 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-md animate-fade-in" (click)="close()">
+  <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-zoom-in" (click)="$event.stopPropagation()">
+    <!-- Close icon -->
+    <button 
+      (click)="close()" 
+      class="absolute top-6 right-6 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Task Title & Badge -->
+    <div class="mb-4 pr-8">
+      <div class="flex items-center gap-2 mb-2 flex-wrap">
+        <span 
+          *ngIf="task.category" 
+          class="px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
+        >
+          {{ task.category.name }}
+        </span>
+        <span *ngIf="task.dueDate" class="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 dark:text-slate-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          {{ task.dueDate | date:'dd.MM.yyyy' }}
+        </span>
+      </div>
+      <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
+        {{ task.title }}
+      </h3>
+    </div>
+
+    <!-- Description Content Box -->
+    <div class="border-t border-slate-100 dark:border-slate-800 pt-4 mb-6">
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+        {{ 'dashboard.modal.descModalTitle' | translate }}
+      </h4>
+      <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-100/80 dark:border-slate-800/80 max-h-[300px] overflow-y-auto">
+        <p 
+          class="text-sm leading-relaxed break-words"
+          [ngClass]="task.description ? 'text-slate-700 dark:text-slate-300 whitespace-pre-wrap' : 'text-slate-400 dark:text-slate-500 italic'"
+        >
+          {{ task.description || ('common.noDescription' | translate) }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+      <button 
+        type="button" 
+        (click)="close()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-2xl text-sm transition-all cursor-pointer shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/20"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>

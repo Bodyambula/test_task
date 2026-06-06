@@ -17,7 +17,7 @@
         </div>
         <div>
           <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">TaskMan</h1>
-          <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold tracking-wider uppercase">{{ 'dashboard.title' | translate:lang() }}</p>
+          <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold tracking-wider uppercase">{{ 'dashboard.title' | translate }}</p>
         </div>
       </div>
       
@@ -48,7 +48,7 @@
           type="button"
           (click)="themeService.toggleTheme()" 
           class="w-[30px] h-[30px] rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer shadow-sm active:scale-95"
-          [title]="(theme() === 'light' ? 'dashboard.theme.dark' : 'dashboard.theme.light') | translate:lang()"
+          [title]="(theme() === 'light' ? 'dashboard.theme.dark' : 'dashboard.theme.light') | translate"
         >
           <!-- Sun icon (shows in dark mode to switch to light mode) -->
           <svg *ngIf="theme() === 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-500 animate-[fade-in_0.2s_ease-out]">
@@ -80,18 +80,18 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
         </svg>
-        {{ 'common.logout' | translate:lang() }}
+        {{ 'common.logout' | translate }}
       </button>
     </div>
 
     <!-- Categories Section -->
     <div class="flex-1 p-6 flex flex-col min-h-0">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ 'dashboard.categories.title' | translate:lang() }}</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ 'dashboard.categories.title' | translate }}</h3>
         <button 
           (click)="isAddingCategory.set(!isAddingCategory())" 
           class="text-indigo-600 hover:text-indigo-700 transition-colors p-1 rounded-lg hover:bg-slate-100 cursor-pointer"
-          [title]="'dashboard.categories.addBtn' | translate:lang()"
+          [title]="'dashboard.categories.addBtn' | translate"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -102,11 +102,12 @@
       <!-- Add Category Inline Form -->
       <div *ngIf="isAddingCategory()" class="mb-4 space-y-2 animate-fade-in">
         <div class="flex gap-2">
-          <input 
-            type="text" 
+          <input
+            #newCatInput
+            type="text"
             [value]="newCategoryName()"
-            (input)="newCategoryName.set($any($event.target).value)"
-            [placeholder]="'dashboard.categories.placeholder' | translate:lang()" 
+            (input)="newCategoryName.set(newCatInput.value)"
+            [placeholder]="'dashboard.categories.placeholder' | translate" 
             class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:border-indigo-500 transition-colors"
             (keyup.enter)="createCategory()"
           />
@@ -121,7 +122,7 @@
       </div>
 
       <!-- Categories List -->
-      <div class="space-y-1 overflow-y-auto max-h-[300px] pr-1 flex-1">
+      <div class="space-y-1 overflow-y-auto pr-1 flex-1">
         <!-- All Categories Button -->
         <button 
           (click)="onCategorySelect(null)" 
@@ -130,13 +131,13 @@
         >
           <span class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-            {{ 'dashboard.categories.all' | translate:lang() }}
+            {{ 'dashboard.categories.all' | translate }}
           </span>
         </button>
 
         <!-- Dynamic Categories -->
         <button 
-          *ngFor="let cat of categories(); let i = index" 
+          *ngFor="let cat of categories(); let i = index; trackBy: trackByCategoryId" 
           (click)="onCategorySelect(cat.id)" 
           class="group w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-sm transition-all duration-200 border border-transparent cursor-pointer animate-fade-in"
           [style.animation-delay]="(i * 0.03) + 's'"
@@ -148,8 +149,8 @@
           </span>
           <button 
             (click)="deleteCategory(cat.id, $event)" 
-            class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-555 transition-all p-1 rounded-md hover:bg-slate-100 cursor-pointer"
-            [title]="'dashboard.categories.deleteTitle' | translate:lang()"
+            class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-600 transition-all p-1 rounded-md hover:bg-slate-100 cursor-pointer"
+            [title]="'dashboard.categories.deleteTitle' | translate"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -165,8 +166,8 @@
     <!-- Header -->
     <header class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
       <div>
-        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ 'dashboard.title' | translate:lang() }}</h2>
-        <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ 'dashboard.welcome' | translate:lang():{userName: userName()} }}</p>
+        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ 'dashboard.title' | translate }}</h2>
+        <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ 'dashboard.welcome' | translate:{userName: userName()} }}</p>
       </div>
       <div class="flex items-center gap-3 self-stretch sm:self-auto">
         <!-- New Task Button -->
@@ -177,7 +178,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          {{ 'dashboard.newTask' | translate:lang() }}
+          {{ 'dashboard.newTask' | translate }}
         </button>
       </div>
     </header>
@@ -195,7 +196,7 @@
           type="text" 
           [value]="searchQuery()"
           (input)="onSearchChange($event)"
-          [placeholder]="'dashboard.filters.searchPlaceholder' | translate:lang()" 
+          [placeholder]="'dashboard.filters.searchPlaceholder' | translate" 
           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl pl-12 pr-4 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:border-indigo-500 transition-colors"
         />
       </div>
@@ -210,7 +211,7 @@
             class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
             [ngClass]="selectedStatus() === null ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/20 dark:border-slate-600/30' : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-slate-200'"
           >
-            {{ 'dashboard.filters.all' | translate:lang() }}
+            {{ 'dashboard.filters.all' | translate }}
           </button>
           <button 
             type="button"
@@ -218,7 +219,7 @@
             class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
             [ngClass]="selectedStatus() === false ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/20 dark:border-slate-600/30' : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-slate-200'"
           >
-            {{ 'dashboard.filters.active' | translate:lang() }}
+            {{ 'dashboard.filters.active' | translate }}
           </button>
           <button 
             type="button"
@@ -226,7 +227,7 @@
             class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-semibold text-center transition-all duration-200 cursor-pointer"
             [ngClass]="selectedStatus() === true ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/20 dark:border-slate-600/30' : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-slate-200'"
           >
-            {{ 'dashboard.filters.completed' | translate:lang() }}
+            {{ 'dashboard.filters.completed' | translate }}
           </button>
         </div>
 
@@ -237,24 +238,24 @@
             (click)="viewMode.set('grid')" 
             class="flex-1 sm:flex-initial p-2 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
             [ngClass]="viewMode() === 'grid' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/20 dark:border-slate-600/30' : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-slate-200'"
-            [title]="'common.grid' | translate:lang()"
+            [title]="'common.grid' | translate"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
             </svg>
-            <span class="sm:hidden">{{ 'common.grid' | translate:lang() }}</span>
+            <span class="sm:hidden">{{ 'common.grid' | translate }}</span>
           </button>
           <button 
             type="button"
             (click)="viewMode.set('list')" 
             class="flex-1 sm:flex-initial p-2 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold"
             [ngClass]="viewMode() === 'list' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/20 dark:border-slate-600/30' : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-slate-200'"
-            [title]="'common.list' | translate:lang()"
+            [title]="'common.list' | translate"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
             </svg>
-            <span class="sm:hidden">{{ 'common.list' | translate:lang() }}</span>
+            <span class="sm:hidden">{{ 'common.list' | translate }}</span>
           </button>
         </div>
       </div>
@@ -268,7 +269,7 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <p class="text-slate-500 text-sm">{{ 'dashboard.list.loading' | translate:lang() }}</p>
+        <p class="text-slate-500 text-sm">{{ 'dashboard.list.loading' | translate }}</p>
       </div>
 
       <!-- Empty State -->
@@ -278,108 +279,27 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m1.875-12h7.5M21 7.5h-7.5M3 6h1.5m1.5 0H18m-15 3h1.5m1.5 0H18m-15 3h1.5m1.5 0H15m-12 3h1.5m1.5 0H15m-12 3h1.5m1.5 0H15" />
           </svg>
         </div>
-        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">{{ 'dashboard.list.emptyTitle' | translate:lang() }}</h3>
-        <p class="text-slate-500 dark:text-slate-400 max-w-sm mb-6 text-sm">{{ 'dashboard.list.emptyDesc' | translate:lang() }}</p>
+        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">{{ 'dashboard.list.emptyTitle' | translate }}</h3>
+        <p class="text-slate-500 dark:text-slate-400 max-w-sm mb-6 text-sm">{{ 'dashboard.list.emptyDesc' | translate }}</p>
         <button 
           (click)="openCreateTaskModal()" 
           class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl text-sm transition-all cursor-pointer"
         >
-          {{ 'dashboard.list.createBtn' | translate:lang() }}
+          {{ 'dashboard.list.createBtn' | translate }}
         </button>
       </div>
 
       <!-- Task cards grid -->
       <div *ngIf="!isTasksLoading() && sortedTasks().length > 0 && viewMode() === 'grid'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <div 
-          *ngFor="let task of sortedTasks(); let i = index" 
-          (click)="openDescModal(task)"
-          class="backdrop-blur-xl bg-white dark:bg-slate-900 border rounded-3xl p-5 flex flex-col justify-between transition-all duration-300 hover:border-indigo-200 dark:hover:border-indigo-900/30 hover:-translate-y-1 shadow-sm hover:shadow-md animate-fade-in cursor-pointer"
+        <app-task-card
+          *ngFor="let task of sortedTasks(); let i = index; trackBy: trackByTaskId"
+          [task]="task"
           [style.animation-delay]="(i * 0.05) + 's'"
-          [ngClass]="task.isCompleted ? 'border-slate-200 dark:border-slate-800 opacity-60' : 'border-slate-200/80 dark:border-slate-800/80'"
-        >
-          <!-- Task Header -->
-          <div class="flex items-start justify-between gap-4 mb-4">
-            <!-- Category Badge -->
-            <span 
-              *ngIf="task.category" 
-              class="px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
-            >
-              {{ task.category.name }}
-            </span>
-            <span *ngIf="!task.category" class="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider">{{ 'common.uncategorized' | translate:lang() }}</span>
-
-            <!-- Status Checkbox -->
-            <button 
-              (click)="toggleTaskCompletion(task); $event.stopPropagation()"
-              class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer"
-              [ngClass]="task.isCompleted ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20 scale-105' : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 text-transparent'"
-            >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="currentColor" 
-                class="w-4 h-4 transition-all duration-300"
-                [ngClass]="task.isCompleted ? 'scale-100 opacity-100 rotate-0' : 'scale-75 opacity-0 -rotate-12'"
-              >
-                <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Title & Description -->
-          <div class="flex-1 mb-4">
-            <h4 
-              class="text-lg font-bold text-slate-800 dark:text-slate-100 leading-tight mb-2 truncate transition-colors"
-              [ngClass]="{'line-through text-slate-400 dark:text-slate-500': task.isCompleted}"
-            >
-              {{ task.title }}
-            </h4>
-            <p 
-              class="text-sm text-slate-600 dark:text-slate-350 line-clamp-3 transition-colors"
-              [ngClass]="{'text-slate-400 dark:text-slate-500': task.isCompleted}"
-            >
-              {{ task.description || ('common.noDescription' | translate:lang()) }}
-            </p>
-          </div>
-
-          <!-- Footer/Date & Actions -->
-          <div class="border-t border-slate-100 dark:border-slate-800 pt-4 flex items-center justify-between gap-4">
-            <!-- Due Date Badge -->
-            <div class="flex items-center gap-1.5 text-xs">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 dark:text-slate-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-              </svg>
-              <span *ngIf="task.dueDate" class="text-slate-500 dark:text-slate-400 font-medium">
-                {{ task.dueDate | date:'dd.MM.yyyy' }}
-              </span>
-              <span *ngIf="!task.dueDate" class="text-slate-400 dark:text-slate-500 font-medium italic">
-                {{ 'common.noDate' | translate:lang() }}
-              </span>
-            </div>
-
-            <!-- Action buttons -->
-            <div class="flex items-center gap-1">
-              <button 
-                (click)="openEditTaskModal(task); $event.stopPropagation()" 
-                class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200/60 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all cursor-pointer"
-                [title]="'dashboard.list.editTask' | translate:lang()"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 20.013a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                </svg>
-              </button>
-              <button 
-                (click)="deleteTask(task.id); $event.stopPropagation()" 
-                class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 border border-slate-200/60 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-900/50 transition-all cursor-pointer"
-                [title]="'dashboard.list.deleteTask' | translate:lang()"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
+          (toggleComplete)="toggleTaskCompletion($event)"
+          (edit)="openEditTaskModal($event)"
+          (delete)="deleteTask($event)"
+          (viewDetails)="openDescModal($event)"
+        ></app-task-card>
       </div>
 
       <!-- Task list (table) view -->
@@ -394,7 +314,7 @@
                   class="py-4 px-6 w-24 text-center cursor-pointer select-none hover:bg-slate-100/70 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div class="flex items-center justify-center gap-1.5">
-                    <span>{{ 'dashboard.table.status' | translate:lang() }}</span>
+                    <span>{{ 'dashboard.table.status' | translate }}</span>
                     <svg *ngIf="sortBy() === 'status' && sortDirection() === 'asc'" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                     </svg>
@@ -412,7 +332,7 @@
                   class="py-4 px-4 cursor-pointer select-none hover:bg-slate-100/70 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div class="flex items-center gap-1.5">
-                    <span>{{ 'dashboard.table.task' | translate:lang() }}</span>
+                    <span>{{ 'dashboard.table.task' | translate }}</span>
                     <svg *ngIf="sortBy() === 'title' && sortDirection() === 'asc'" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                     </svg>
@@ -430,7 +350,7 @@
                   class="py-4 px-4 w-52 cursor-pointer select-none hover:bg-slate-100/70 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div class="flex items-center gap-1.5">
-                    <span>{{ 'dashboard.table.description' | translate:lang() }}</span>
+                    <span>{{ 'dashboard.table.description' | translate }}</span>
                     <svg *ngIf="sortBy() === 'description' && sortDirection() === 'asc'" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                     </svg>
@@ -448,7 +368,7 @@
                   class="py-4 px-4 w-40 cursor-pointer select-none hover:bg-slate-100/70 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div class="flex items-center gap-1.5">
-                    <span>{{ 'dashboard.table.category' | translate:lang() }}</span>
+                    <span>{{ 'dashboard.table.category' | translate }}</span>
                     <svg *ngIf="sortBy() === 'category' && sortDirection() === 'asc'" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                     </svg>
@@ -466,7 +386,7 @@
                   class="py-4 px-4 w-36 cursor-pointer select-none hover:bg-slate-100/70 dark:hover:bg-slate-800 transition-colors"
                 >
                   <div class="flex items-center gap-1.5">
-                    <span>{{ 'dashboard.table.deadline' | translate:lang() }}</span>
+                    <span>{{ 'dashboard.table.deadline' | translate }}</span>
                     <svg *ngIf="sortBy() === 'dueDate' && sortDirection() === 'asc'" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
                     </svg>
@@ -478,125 +398,18 @@
                     </svg>
                   </div>
                 </th>
-                <th scope="col" class="py-4 px-6 w-28 text-right select-none">{{ 'dashboard.table.actions' | translate:lang() }}</th>
+                <th scope="col" class="py-4 px-6 w-28 text-right select-none">{{ 'dashboard.table.actions' | translate }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100/80 dark:divide-slate-800">
-              <tr 
-                *ngFor="let task of sortedTasks(); let i = index" 
-                class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors duration-200"
-                [ngClass]="task.isCompleted ? 'opacity-65' : ''"
-              >
-                <!-- Status Checkbox -->
-                <td class="py-4 px-6 text-center">
-                  <button 
-                    (click)="toggleTaskCompletion(task)" 
-                    class="w-6 h-6 mx-auto rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer"
-                    [ngClass]="task.isCompleted ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20 scale-105' : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 text-transparent'"
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" 
-                      fill="currentColor" 
-                      class="w-4 h-4 transition-all duration-300"
-                      [ngClass]="task.isCompleted ? 'scale-100 opacity-100 rotate-0' : 'scale-75 opacity-0 -rotate-12'"
-                    >
-                      <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
-                    </svg>
-                  </button>
-                </td>
-
-                <!-- Title -->
-                <td class="py-4 px-4">
-                  <div class="max-w-[150px] sm:max-w-[200px] md:max-w-[250px] truncate">
-                    <h4 
-                      class="font-bold text-slate-800 dark:text-slate-100 leading-snug truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                      [ngClass]="{'line-through text-slate-400 dark:text-slate-500': task.isCompleted}"
-                      (click)="openDescModal(task)"
-                    >
-                      {{ task.title }}
-                    </h4>
-                  </div>
-                </td>
-
-                <!-- Description with Hover Tooltip -->
-                <td class="py-4 px-4">
-                  <div 
-                    class="relative group/desc max-w-[150px] sm:max-w-[200px]"
-                    (click)="openDescModal(task)"
-                  >
-                    <span 
-                      class="block truncate text-xs text-slate-500 dark:text-slate-400 transition-colors cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
-                      [ngClass]="{
-                        'text-slate-400 dark:text-slate-500 line-through': task.isCompleted
-                      }"
-                    >
-                      {{ task.description || ('common.noDescription' | translate:lang()) }}
-                    </span>
-                    <!-- Beautiful Custom Tooltip (only if description exists) -->
-                    <div 
-                      *ngIf="task.description" 
-                      class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/desc:block w-64 bg-slate-900 text-white text-xs rounded-xl p-3 shadow-xl z-30 backdrop-blur-sm transition-all duration-200 border border-white/10 cursor-pointer"
-                    >
-                      <p class="leading-relaxed whitespace-normal break-words font-medium">{{ task.description }}</p>
-                      <!-- Tooltip Arrow -->
-                      <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
-                    </div>
-                  </div>
-                </td>
-
-                <!-- Category -->
-                <td class="py-4 px-4 whitespace-nowrap">
-                  <span 
-                    *ngIf="task.category" 
-                    class="inline-flex px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
-                  >
-                    {{ task.category.name }}
-                  </span>
-                  <span *ngIf="!task.category" class="text-slate-400 dark:text-slate-500 text-xs italic">
-                    {{ 'common.uncategorized' | translate:lang() }}
-                  </span>
-                </td>
-
-                <!-- Due Date (Deadline) -->
-                <td class="py-4 px-4 whitespace-nowrap">
-                  <div class="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 dark:text-slate-500">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                    </svg>
-                    <span *ngIf="task.dueDate" class="font-medium text-slate-700 dark:text-slate-300">
-                      {{ task.dueDate | date:'dd.MM.yyyy' }}
-                    </span>
-                    <span *ngIf="!task.dueDate" class="text-slate-400 dark:text-slate-500 italic">
-                      {{ 'common.noDeadline' | translate:lang() }}
-                    </span>
-                  </div>
-                </td>
-
-                <!-- Actions -->
-                <td class="py-4 px-6 text-right whitespace-nowrap">
-                  <div class="flex items-center justify-end gap-1.5">
-                    <button 
-                      (click)="openEditTaskModal(task)" 
-                      class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200/60 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all cursor-pointer"
-                      [title]="'dashboard.list.editTask' | translate:lang()"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 20.013a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                      </svg>
-                    </button>
-                    <button 
-                      (click)="deleteTask(task.id)" 
-                      class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 border border-slate-200/60 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-900/50 transition-all cursor-pointer"
-                      [title]="'dashboard.list.deleteTask' | translate:lang()"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              <tr app-task-row
+                *ngFor="let task of sortedTasks(); let i = index; trackBy: trackByTaskId"
+                [task]="task"
+                (toggleComplete)="toggleTaskCompletion($event)"
+                (edit)="openEditTaskModal($event)"
+                (delete)="deleteTask($event)"
+                (viewDetails)="openDescModal($event)"
+              ></tr>
             </tbody>
           </table>
         </div>
@@ -605,7 +418,7 @@
       <!-- Pagination Footer -->
       <footer *ngIf="!isTasksLoading() && totalTasksCount() > pageSize()" class="mt-8 flex justify-between items-center bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 rounded-3xl shadow-sm">
         <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">
-          {{ 'dashboard.pagination.showing' | translate:lang():{count: sortedTasks().length, total: totalTasksCount()} }}
+          {{ 'dashboard.pagination.showing' | translate:{count: sortedTasks().length, total: totalTasksCount()} }}
         </p>
 
         <div class="flex items-center gap-1.5">
@@ -622,13 +435,13 @@
 
           <!-- Current Page Info -->
           <span class="text-xs font-bold text-slate-700 dark:text-slate-350 px-3">
-            {{ 'dashboard.pagination.page' | translate:lang():{current: currentPage(), total: MathCeil(totalTasksCount() / pageSize())} }}
+            {{ 'dashboard.pagination.page' | translate:{current: currentPage(), total: totalPages()} }}
           </span>
 
           <!-- Next button -->
           <button 
             (click)="onPageChange(currentPage() + 1)" 
-            [disabled]="currentPage() >= MathCeil(totalTasksCount() / pageSize())"
+            [disabled]="currentPage() >= totalPages()"
             class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
@@ -641,168 +454,22 @@
   </main>
 </div>
 
-<!-- Task Create / Edit Modal -->
-<div *ngIf="isTaskModalOpen()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-md animate-fade-in">
-  <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-zoom-in">
-    <!-- Close icon -->
-    <button 
-      (click)="closeTaskModal()" 
-      class="absolute top-6 right-6 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+<!-- Deferred Task Create / Edit Modal -->
+@defer (when isTaskModalOpen()) {
+  <app-task-modal
+    [editingTask]="editingTask()"
+    [categories]="categories()"
+    (saved)="onTaskSaved()"
+    (closed)="closeTaskModal()"
+  ></app-task-modal>
+}
 
-    <!-- Modal Title -->
-    <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-6">
-      {{ (editingTaskId() ? 'dashboard.modal.editTitle' : 'dashboard.modal.createTitle') | translate:lang() }}
-    </h3>
-
-    <!-- Task Form -->
-    <form [formGroup]="taskForm" (ngSubmit)="saveTask()" class="space-y-5">
-      <!-- Title Input -->
-      <div class="space-y-1">
-        <label for="taskTitle" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.titleLabel' | translate:lang() }}</label>
-        <input 
-          id="taskTitle" 
-          type="text" 
-          formControlName="title"
-          [placeholder]="'dashboard.modal.titlePlaceholder' | translate:lang()"
-          class="w-full bg-slate-50 dark:bg-slate-800 border text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
-          [ngClass]="{
-            'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': taskForm.get('title')?.invalid && taskForm.get('title')?.touched,
-            'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus:border-indigo-500': !(taskForm.get('title')?.invalid && taskForm.get('title')?.touched)
-          }"
-        />
-        <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-          <span *ngIf="taskForm.get('title')?.errors?.['required']">{{ 'dashboard.modal.titleRequired' | translate:lang() }}</span>
-          <span *ngIf="taskForm.get('title')?.errors?.['maxlength']">{{ 'dashboard.modal.titleMaxLength' | translate:lang() }}</span>
-        </div>
-      </div>
-
-      <!-- Description Input -->
-      <div class="space-y-1">
-        <label for="taskDesc" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.descLabel' | translate:lang() }}</label>
-        <textarea 
-          id="taskDesc" 
-          rows="3"
-          formControlName="description"
-          [placeholder]="'dashboard.modal.descPlaceholder' | translate:lang()"
-          class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors"
-        ></textarea>
-        <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-          <span *ngIf="taskForm.get('description')?.errors?.['maxlength']">{{ 'dashboard.modal.descMaxLength' | translate:lang() }}</span>
-        </div>
-      </div>
-
-      <!-- Two Column Inputs (Category & Due Date) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- Category Select -->
-        <div class="space-y-1">
-          <label for="taskCat" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.categoryLabel' | translate:lang() }}</label>
-          <select 
-            id="taskCat" 
-            formControlName="categoryId"
-            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors cursor-pointer"
-          >
-            <option value="" class="bg-white dark:bg-slate-900">{{ 'common.uncategorized' | translate:lang() }}</option>
-            <option *ngFor="let cat of categories()" [value]="cat.id" class="bg-white dark:bg-slate-900">
-              {{ cat.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Due Date -->
-        <div class="space-y-1">
-          <label for="taskDueDate" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'dashboard.modal.dateLabel' | translate:lang() }}</label>
-          <input 
-            id="taskDueDate" 
-            type="date" 
-            formControlName="dueDate"
-            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-colors cursor-pointer"
-          />
-        </div>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-        <button 
-          type="button" 
-          (click)="closeTaskModal()"
-          class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2.5 px-5 rounded-2xl text-sm transition-all cursor-pointer"
-        >
-          {{ 'common.cancel' | translate:lang() }}
-        </button>
-        <button 
-          type="submit"
-          class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-5 rounded-2xl text-sm shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
-        >
-          {{ 'common.save' | translate:lang() }}
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Task Description Details Modal -->
-<div *ngIf="selectedTaskForDesc() as task" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-md animate-fade-in" (click)="closeDescModal()">
-  <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-zoom-in" (click)="$event.stopPropagation()">
-    <!-- Close icon -->
-    <button 
-      (click)="closeDescModal()" 
-      class="absolute top-6 right-6 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-
-    <!-- Task Title & Badge -->
-    <div class="mb-4 pr-8">
-      <div class="flex items-center gap-2 mb-2 flex-wrap">
-        <span 
-          *ngIf="task.category" 
-          class="px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
-        >
-          {{ task.category.name }}
-        </span>
-        <span *ngIf="task.dueDate" class="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 dark:text-slate-500">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-          </svg>
-          {{ task.dueDate | date:'dd.MM.yyyy' }}
-        </span>
-      </div>
-      <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
-        {{ task.title }}
-      </h3>
-    </div>
-
-    <!-- Description Content Box -->
-    <div class="border-t border-slate-100 dark:border-slate-800 pt-4 mb-6">
-      <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-        {{ 'dashboard.modal.descModalTitle' | translate:lang() }}
-      </h4>
-      <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-100/80 dark:border-slate-800/80 max-h-[300px] overflow-y-auto">
-        <p 
-          class="text-sm leading-relaxed break-words"
-          [ngClass]="task.description ? 'text-slate-700 dark:text-slate-300 whitespace-pre-wrap' : 'text-slate-400 dark:text-slate-500 italic'"
-        >
-          {{ task.description || ('common.noDescription' | translate:lang()) }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
-      <button 
-        type="button" 
-        (click)="closeDescModal()"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-2xl text-sm transition-all cursor-pointer shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/20"
-      >
-        OK
-      </button>
-    </div>
-  </div>
-</div>
+<!-- Deferred Task Description Details Modal -->
+@defer (when selectedTaskForDesc() !== null) {
+  @if (selectedTaskForDesc(); as task) {
+    <app-task-detail-modal
+      [task]="task"
+      (closed)="closeDescModal()"
+    ></app-task-detail-modal>
+  }
+}

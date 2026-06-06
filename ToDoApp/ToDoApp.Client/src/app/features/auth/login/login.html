@@ -34,8 +34,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ 'auth.login.title' | translate:lang() }}</h2>
-        <p class="text-slate-500 mt-2 font-medium">{{ 'auth.login.welcomeBack' | translate:lang() }}</p>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ 'auth.login.title' | translate }}</h2>
+        <p class="text-slate-500 mt-2 font-medium">{{ 'auth.login.welcomeBack' | translate }}</p>
       </div>
 
       <!-- Error Alert -->
@@ -50,7 +50,7 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
         <!-- Email Input -->
         <div class="space-y-1">
-          <label for="email" class="block text-sm font-medium text-slate-700">{{ 'auth.login.emailLabel' | translate:lang() }}</label>
+          <label for="email" class="block text-sm font-medium text-slate-700">{{ 'auth.login.emailLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -61,7 +61,7 @@
               id="email" 
               type="email" 
               formControlName="email"
-              [placeholder]="'auth.login.emailPlaceholder' | translate:lang()"
+              [placeholder]="'auth.login.emailPlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': loginForm.get('email')?.invalid && loginForm.get('email')?.touched,
@@ -70,14 +70,14 @@
             />
           </div>
           <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']">{{ 'auth.login.emailRequired' | translate:lang() }}</span>
-            <span *ngIf="loginForm.get('email')?.errors?.['email']">{{ 'auth.login.emailInvalid' | translate:lang() }}</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">{{ 'auth.login.emailRequired' | translate }}</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">{{ 'auth.login.emailInvalid' | translate }}</span>
           </div>
         </div>
 
         <!-- Password Input -->
         <div class="space-y-1">
-          <label for="password" class="block text-sm font-medium text-slate-700">{{ 'auth.login.passwordLabel' | translate:lang() }}</label>
+          <label for="password" class="block text-sm font-medium text-slate-700">{{ 'auth.login.passwordLabel' | translate }}</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -88,7 +88,7 @@
               id="password" 
               type="password" 
               formControlName="password"
-              [placeholder]="'auth.login.passwordPlaceholder' | translate:lang()"
+              [placeholder]="'auth.login.passwordPlaceholder' | translate"
               class="w-full bg-slate-50 border text-slate-800 rounded-2xl pl-12 pr-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/10 transition-all duration-200"
               [ngClass]="{
                 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
@@ -97,8 +97,8 @@
             />
           </div>
           <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-500 text-xs mt-1 pl-1">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'auth.login.passwordRequired' | translate:lang() }}</span>
-            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'auth.login.passwordMinLength' | translate:lang() }}</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'auth.login.passwordRequired' | translate }}</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'auth.login.passwordMinLength' | translate }}</span>
           </div>
         </div>
 
@@ -108,13 +108,13 @@
           [disabled]="isLoading()"
           class="w-full relative flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-2xl shadow-lg shadow-indigo-500/10 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 cursor-pointer"
         >
-          <span *ngIf="!isLoading()">{{ 'auth.login.submit' | translate:lang() }}</span>
+          <span *ngIf="!isLoading()">{{ 'auth.login.submit' | translate }}</span>
           <span *ngIf="isLoading()" class="flex items-center gap-2">
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            {{ 'common.loading' | translate:lang() }}
+            {{ 'common.loading' | translate }}
           </span>
         </button>
       </form>
@@ -125,15 +125,15 @@
           <div class="w-full border-t border-slate-200"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-slate-400 font-semibold tracking-wider">{{ 'common.or' | translate:lang() }}</span>
+          <span class="bg-white px-3 text-slate-400 font-semibold tracking-wider">{{ 'common.or' | translate }}</span>
         </div>
       </div>
 
       <!-- Registration link -->
       <div class="text-center">
         <p class="text-slate-500 text-sm font-medium">
-          {{ 'auth.login.noAccount' | translate:lang() }}
-          <a routerLink="/register" class="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors duration-200 cursor-pointer ml-1 hover:underline">{{ 'auth.login.createAccount' | translate:lang() }}</a>
+          {{ 'auth.login.noAccount' | translate }}
+          <a routerLink="/register" class="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors duration-200 cursor-pointer ml-1 hover:underline">{{ 'auth.login.createAccount' | translate }}</a>
         </p>
       </div>
 

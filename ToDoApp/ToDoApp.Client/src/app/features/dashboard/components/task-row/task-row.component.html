@@ -1,0 +1,109 @@
+<!-- Status Checkbox -->
+<td class="py-4 px-6 text-center">
+  <button 
+    (click)="toggleComplete.emit(task)" 
+    class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all duration-300 mx-auto cursor-pointer"
+    [ngClass]="task.isCompleted ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20 scale-105' : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 text-transparent'"
+  >
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 24 24" 
+      fill="currentColor" 
+      class="w-4 h-4 transition-all duration-300"
+      [ngClass]="task.isCompleted ? 'scale-100 opacity-100 rotate-0' : 'scale-75 opacity-0 -rotate-12'"
+    >
+      <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+    </svg>
+  </button>
+</td>
+
+<!-- Title -->
+<td class="py-4 px-4">
+  <div class="max-w-[150px] sm:max-w-[200px] md:max-w-[250px] truncate">
+    <h4 
+      class="font-bold text-slate-800 dark:text-slate-100 leading-snug truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+      [ngClass]="{'line-through text-slate-400 dark:text-slate-500': task.isCompleted}"
+      (click)="viewDetails.emit(task)"
+    >
+      {{ task.title }}
+    </h4>
+  </div>
+</td>
+
+<!-- Description with Hover Tooltip -->
+<td class="py-4 px-4">
+  <div 
+    class="relative group/desc max-w-[150px] sm:max-w-[200px]"
+    (click)="viewDetails.emit(task)"
+  >
+    <span 
+      class="block truncate text-xs text-slate-500 dark:text-slate-400 transition-colors cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
+      [ngClass]="{
+        'text-slate-400 dark:text-slate-500 line-through': task.isCompleted
+      }"
+    >
+      {{ task.description || ('common.noDescription' | translate) }}
+    </span>
+    <!-- Beautiful Custom Tooltip (only if description exists) -->
+    <div 
+      *ngIf="task.description" 
+      class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/desc:block w-64 bg-slate-900 text-white text-xs rounded-xl p-3 shadow-xl z-30 backdrop-blur-sm transition-all duration-200 border border-white/10 cursor-pointer"
+    >
+      <p class="leading-relaxed whitespace-normal break-words font-medium">{{ task.description }}</p>
+      <!-- Tooltip Arrow -->
+      <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+    </div>
+  </div>
+</td>
+
+<!-- Category -->
+<td class="py-4 px-4 whitespace-nowrap">
+  <span 
+    *ngIf="task.category" 
+    class="inline-flex px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
+  >
+    {{ task.category.name }}
+  </span>
+  <span *ngIf="!task.category" class="text-slate-400 dark:text-slate-500 text-xs italic">
+    {{ 'common.uncategorized' | translate }}
+  </span>
+</td>
+
+<!-- Due Date (Deadline) -->
+<td class="py-4 px-4 whitespace-nowrap">
+  <div class="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 dark:text-slate-500">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+    </svg>
+    <span *ngIf="task.dueDate" class="font-medium text-slate-700 dark:text-slate-300">
+      {{ task.dueDate | date:'dd.MM.yyyy' }}
+    </span>
+    <span *ngIf="!task.dueDate" class="text-slate-400 dark:text-slate-500 italic">
+      {{ 'common.noDeadline' | translate }}
+    </span>
+  </div>
+</td>
+
+<!-- Actions -->
+<td class="py-4 px-6 text-right whitespace-nowrap">
+  <div class="flex items-center justify-end gap-1.5">
+    <button 
+      (click)="edit.emit(task)" 
+      class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200/60 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all cursor-pointer"
+      [title]="'dashboard.list.editTask' | translate"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 20.013a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+      </svg>
+    </button>
+    <button 
+      (click)="delete.emit(task.id)" 
+      class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 border border-slate-200/60 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-900/50 transition-all cursor-pointer"
+      [title]="'dashboard.list.deleteTask' | translate"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0M10.5 11.25h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0h.008v.008h-.008v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+      </svg>
+    </button>
+  </div>
+</td>
