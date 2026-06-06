@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --animate-fade-in: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-zoom-in: zoom-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  --color-indigo-50: #f3faf6;
+  --color-indigo-100: #dfede4;
+  --color-indigo-200: #bfdac8;
+  --color-indigo-300: #9ec8ab;
+  --color-indigo-400: #7fb58e;
+  --color-indigo-500: #60a372;
+  --color-indigo-600: #4d825b;
+  --color-indigo-700: #3f6a4b;
+  --color-indigo-800: #31523a;
+  --color-indigo-900: #223928;
+  --color-indigo-950: #142218;
+
+  --color-purple-50: #f3faf6;
+  --color-purple-100: #dfede4;
+  --color-purple-200: #bfdac8;
+  --color-purple-300: #9ec8ab;
+  --color-purple-400: #7fb58e;
+  --color-purple-500: #60a372;
+  --color-purple-600: #60a372;
+  --color-purple-700: #4d825b;
+  --color-purple-800: #3f6a4b;
+  --color-purple-900: #31523a;
+  --color-purple-950: #223928;
+
+  --animate-fade-in: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-zoom-in: zoom-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float-slow: float-slow 15s ease-in-out infinite;
+  --animate-float-slower: float-slower 20s ease-in-out infinite;
 
   @keyframes fade-in {
     from {
@@ -23,6 +51,24 @@
     to {
       opacity: 1;
       transform: scale(1);
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    50% {
+      transform: translateY(-25px) translateX(15px) scale(1.08);
+    }
+  }
+
+  @keyframes float-slower {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    50% {
+      transform: translateY(20px) translateX(-25px) scale(1.05);
     }
   }
 }
@@ -64,4 +110,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.8;
+}
+
+/* Smooth theme transition */
+html, body, aside, main, header, section, div, button, input, textarea, select, table, th, td, h1, h2, h3, h4, p, span, svg {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease, stroke 0.3s ease, box-shadow 0.3s ease;
 }

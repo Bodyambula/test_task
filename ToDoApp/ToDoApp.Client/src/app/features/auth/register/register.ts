@@ -3,18 +3,22 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslationService } from '../../../core/services/translation.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './register.html'
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  translationService = inject(TranslationService);
 
+  lang = this.translationService.currentLang;
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   isSuccess = signal<boolean>(false);
@@ -31,6 +35,10 @@ export class RegisterComponent {
     password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
     confirmPassword: ['', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
+
+  changeLang(lang: 'uk' | 'en'): void {
+    this.translationService.setLanguage(lang);
+  }
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
@@ -63,9 +71,9 @@ export class RegisterComponent {
         } else if (err.error && typeof err.error === 'string') {
           this.errorMessage.set(err.error);
         } else if (err.status === 400) {
-          this.errorMessage.set('Користувач з таким Email вже існує або дані некоректні');
+          this.errorMessage.set(this.translationService.translate('auth.register.userExists'));
         } else {
-          this.errorMessage.set('Помилка реєстрації. Спробуйте пізніше.');
+          this.errorMessage.set(this.translationService.translate('auth.register.registrationError'));
         }
       }
     });

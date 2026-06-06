@@ -2,16 +2,18 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { CategoryService } from '../../core/services/category.service';
 import { TaskService } from '../../core/services/task.service';
 import { Category, Task, TaskPagedResult } from '../../core/models/todo.models';
+import { TranslationService } from '../../core/services/translation.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
@@ -20,24 +22,62 @@ export class DashboardComponent implements OnInit {
   private taskService = inject(TaskService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  translationService = inject(TranslationService);
+  themeService = inject(ThemeService);
+
+  lang = this.translationService.currentLang;
+  theme = this.themeService.currentTheme;
 
   // User details
-  userName = computed(() => this.authService.currentUser()?.name || 'Користувач');
+  userName = computed(() => this.authService.currentUser()?.name || (this.lang() === 'uk' ? 'Користувач' : 'User'));
   userEmail = computed(() => this.authService.currentUser()?.email || '');
-
-  // Statistics signals
-  statTotal = signal<number>(0);
-  statCompleted = signal<number>(0);
-  statPending = computed(() => this.statTotal() - this.statCompleted());
-  statRate = computed(() => {
-    const total = this.statTotal();
-    return total > 0 ? Math.round((this.statCompleted() / total) * 100) : 0;
-  });
 
   // Categories and Tasks signals
   categories = signal<Category[]>([]);
   tasks = signal<Task[]>([]);
   totalTasksCount = signal<number>(0);
+
+  // Sorting signals
+  sortBy = signal<string | null>(null);
+  sortDirection = signal<'asc' | 'desc'>('asc');
+  sortedTasks = computed(() => {
+    const items = [...this.tasks()];
+    const field = this.sortBy();
+    const direction = this.sortDirection();
+
+    if (!field) {
+      return items;
+    }
+
+    return items.sort((a, b) => {
+      let valA: any = null;
+      let valB: any = null;
+
+      if (field === 'status') {
+        valA = a.isCompleted ? 1 : 0;
+        valB = b.isCompleted ? 1 : 0;
+      } else if (field === 'title') {
+        valA = a.title.toLowerCase();
+        valB = b.title.toLowerCase();
+      } else if (field === 'description') {
+        valA = (a.description || '').toLowerCase();
+        valB = (b.description || '').toLowerCase();
+      } else if (field === 'category') {
+        valA = (a.category?.name || '').toLowerCase();
+        valB = (b.category?.name || '').toLowerCase();
+      } else if (field === 'dueDate') {
+        valA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+        valB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+      }
+
+      if (valA === valB) return 0;
+      if (valA === null || valA === undefined || valA === '') return 1;
+      if (valB === null || valB === undefined || valB === '') return -1;
+      
+      const compare = valA > valB ? 1 : -1;
+      return direction === 'asc' ? compare : -compare;
+    });
+  });
 
   // Filters signals
   searchQuery = signal<string>('');
@@ -49,6 +89,8 @@ export class DashboardComponent implements OnInit {
   // Modal signals
   isTaskModalOpen = signal<boolean>(false);
   editingTaskId = signal<number | null>(null); // null = creating, otherwise editing
+  viewMode = signal<'grid' | 'list'>('grid');
+  selectedTaskForDesc = signal<Task | null>(null);
 
   // Category management inline signals
   isAddingCategory = signal<boolean>(false);
@@ -57,7 +99,6 @@ export class DashboardComponent implements OnInit {
 
   // Loading signals
   isTasksLoading = signal<boolean>(false);
-  isStatsLoading = signal<boolean>(false);
 
   // Task form
   taskForm = this.fb.group({
@@ -101,33 +142,25 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-
-  // Load statistics using lightweight calls
-  loadStats(): void {
-    this.isStatsLoading.set(true);
-    forkJoin({
-      all: this.taskService.getTasks(1, 1),
-      completed: this.taskService.getTasks(1, 1, true)
-    }).subscribe({
-      next: (res) => {
-        this.statTotal.set(res.all.totalCount);
-        this.statCompleted.set(res.completed.totalCount);
-        this.isStatsLoading.set(false);
-      },
-      error: () => {
-        this.isStatsLoading.set(false);
-        console.error('Не вдалося оновити статистику');
-      }
-    });
-  }
-
-  // Refresh both tasks list and statistics
+  // Refresh tasks list
   refreshDashboard(): void {
     this.loadTasks();
-    this.loadStats();
   }
 
   // Filter handlers
+  toggleSort(field: string): void {
+    if (this.sortBy() === field) {
+      if (this.sortDirection() === 'asc') {
+        this.sortDirection.set('desc');
+      } else {
+        this.sortBy.set(null); // Reset sorting
+      }
+    } else {
+      this.sortBy.set(field);
+      this.sortDirection.set('asc');
+    }
+  }
+
   onSearchChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
@@ -203,6 +236,14 @@ export class DashboardComponent implements OnInit {
     this.isTaskModalOpen.set(false);
   }
 
+  openDescModal(task: Task): void {
+    this.selectedTaskForDesc.set(task);
+  }
+
+  closeDescModal(): void {
+    this.selectedTaskForDesc.set(null);
+  }
+
   saveTask(): void {
     if (this.taskForm.invalid) {
       this.taskForm.markAllAsTouched();
@@ -255,12 +296,12 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteTask(id: number): void {
-    if (confirm('Ви впевнені, що хочете видалити це завдання?')) {
+    if (confirm(this.translationService.translate('dashboard.list.confirmDeleteTask'))) {
       this.taskService.deleteTask(id).subscribe({
         next: () => {
           this.refreshDashboard();
         },
-        error: () => console.error('Не вдалося видалити завдання')
+        error: () => console.error(this.translationService.translate('dashboard.list.errorDeleteTask'))
       });
     }
   }
@@ -281,7 +322,7 @@ export class DashboardComponent implements OnInit {
         if (err.error?.message) {
           this.categoryError.set(err.error.message);
         } else {
-          this.categoryError.set('Не вдалося створити категорію. Можливо, вона вже існує.');
+          this.categoryError.set(this.translationService.translate('dashboard.categories.errorCreate'));
         }
       }
     });
@@ -289,7 +330,7 @@ export class DashboardComponent implements OnInit {
 
   deleteCategory(id: number, event: Event): void {
     event.stopPropagation(); // Prevent category filter triggering
-    if (confirm('При видаленні категорії всі завдання в ній залишаться, але втратять цю категорію. Продовжити?')) {
+    if (confirm(this.translationService.translate('dashboard.categories.confirmDelete'))) {
       this.categoryService.deleteCategory(id).subscribe({
         next: () => {
           // If the deleted category was selected, reset filter
@@ -299,7 +340,7 @@ export class DashboardComponent implements OnInit {
           this.loadCategories();
           this.refreshDashboard();
         },
-        error: () => console.error('Не вдалося видалити категорію')
+        error: () => console.error(this.translationService.translate('dashboard.categories.errorDelete'))
       });
     }
   }
