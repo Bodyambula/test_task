@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace ToDoApp.Models.Task
 {
@@ -13,7 +13,7 @@ namespace ToDoApp.Models.Task
 
         public DateTime? DueDate { get; set; }
 
-        // Необов'язкове поле: якщо користувач не обрав категорію, прийде null
+        // Nullable because a task does not necessarily have to belong to a category.
         public int? CategoryId { get; set; }
     }
 }

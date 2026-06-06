@@ -7,6 +7,7 @@ namespace ToDoApp.Services.Interfaces
     public interface IUserService
     {
         Task<AuthResponseDto> RegisterAsync(RegisterModel model, CancellationToken cancellationToken = default);
+
         Task<AuthResponseDto> LoginAsync(LoginModel model, CancellationToken cancellationToken = default);
     }
 }

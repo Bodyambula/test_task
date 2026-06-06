@@ -17,8 +17,20 @@ dotnet_diagnostic.SA1200.severity = none
 # SA1309: Field should not begin with an underscore
 dotnet_diagnostic.SA1309.severity = none
 
+# SA1503: Braces should not be omitted
+dotnet_diagnostic.SA1503.severity = none
+
+# SA1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = none
+
+
 
 # Exclude generated code (like EF Migrations) from analysis
 [**/Migrations/**.cs]
 generated_code = true
 dotnet_analyzer_diagnostic.severity = none
+
+# Suppress SA1516 for top-level statement generated class Program
+[**/Program.cs]
+dotnet_diagnostic.SA1516.severity = none
+

@@ -26,12 +26,10 @@ namespace ToDoApp.Services.Implementations
             if (model == null)
                 throw new BadRequestException("Task details cannot be null.");
 
-            // Verify user exists
             var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
             if (user == null)
                 throw new NotFoundException($"User with ID {userId} not found.");
 
-            // Verify category belongs to user
             if (model.CategoryId.HasValue)
             {
                 var category = await _unitOfWork.Categories.GetByIdAsync(model.CategoryId.Value, cancellationToken);
@@ -52,7 +50,6 @@ namespace ToDoApp.Services.Implementations
             await _unitOfWork.Tasks.AddAsync(task, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Fetch again to include Category if set
             if (task.CategoryId.HasValue)
             {
                 task.Category = await _unitOfWork.Categories.GetByIdAsync(task.CategoryId.Value, cancellationToken);
@@ -67,7 +64,6 @@ namespace ToDoApp.Services.Implementations
             if (task == null || task.UserId != userId)
                 throw new NotFoundException($"Task with ID {taskId} not found.");
 
-            // Fetch category
             if (task.CategoryId.HasValue)
             {
                 task.Category = await _unitOfWork.Categories.GetByIdAsync(task.CategoryId.Value, cancellationToken);
@@ -77,11 +73,11 @@ namespace ToDoApp.Services.Implementations
         }
 
         public async Task<TaskPagedResultDto> GetPagedAsync(
-            int userId, 
-            int page, 
-            int pageSize, 
-            bool? isCompleted, 
-            int? categoryId, 
+            int userId,
+            int page,
+            int pageSize,
+            bool? isCompleted,
+            int? categoryId,
             string? search,
             CancellationToken cancellationToken = default)
         {
@@ -89,7 +85,6 @@ namespace ToDoApp.Services.Implementations
             if (pageSize < 1) pageSize = 10;
             if (pageSize > 100) pageSize = 100; // Limit page size to prevent abuse
 
-            // Verify category if requested
             if (categoryId.HasValue)
             {
                 var category = await _unitOfWork.Categories.GetByIdAsync(categoryId.Value, cancellationToken);
@@ -118,7 +113,6 @@ namespace ToDoApp.Services.Implementations
             if (task == null || task.UserId != userId)
                 throw new NotFoundException($"Task with ID {taskId} not found.");
 
-            // Verify new category belongs to user
             if (model.CategoryId.HasValue && model.CategoryId != task.CategoryId)
             {
                 var category = await _unitOfWork.Categories.GetByIdAsync(model.CategoryId.Value, cancellationToken);
@@ -136,7 +130,6 @@ namespace ToDoApp.Services.Implementations
             _unitOfWork.Tasks.Update(task);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Fetch category
             if (task.CategoryId.HasValue)
             {
                 task.Category = await _unitOfWork.Categories.GetByIdAsync(task.CategoryId.Value, cancellationToken);

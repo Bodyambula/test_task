@@ -7,6 +7,8 @@ using ToDoApp.Services.Exceptions;
 
 namespace ToDoApp.WebApi.Middleware
 {
+    // Global middleware to intercept unhandled exceptions and return standardized JSON error responses.
+    // WARNING: Do not leak sensitive system details or stack traces to clients in production.
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;

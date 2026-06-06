@@ -48,6 +48,8 @@ namespace ToDoApp.Services.Security
                 using (var algorithm = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithm))
                 {
                     byte[] keyToCheck = algorithm.GetBytes(KeySize);
+
+                    // Use fixed-time comparison to prevent timing attacks.
                     return CryptographicOperations.FixedTimeEquals(key, keyToCheck);
                 }
             }

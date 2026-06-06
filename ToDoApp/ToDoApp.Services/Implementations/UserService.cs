@@ -26,15 +26,12 @@ namespace ToDoApp.Services.Implementations
             if (model == null)
                 throw new BadRequestException("Registration details cannot be null.");
 
-            // Check if user already exists
             var existingUser = await _unitOfWork.Users.GetByEmailAsync(model.Email, cancellationToken);
             if (existingUser != null)
                 throw new BadRequestException($"User with email '{model.Email}' already exists.");
 
-            // Hash password
             var passwordHash = PasswordHasher.HashPassword(model.Password);
 
-            // Create user entity
             var user = new User
             {
                 Email = model.Email,
@@ -45,7 +42,6 @@ namespace ToDoApp.Services.Implementations
             await _unitOfWork.Users.AddAsync(user, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Generate JWT Token
             var token = _jwtService.GenerateToken(user);
 
             return new AuthResponseDto
@@ -61,12 +57,10 @@ namespace ToDoApp.Services.Implementations
             if (model == null)
                 throw new BadRequestException("Login details cannot be null.");
 
-            // Get user by email
             var user = await _unitOfWork.Users.GetByEmailAsync(model.Email, cancellationToken);
             if (user == null || !PasswordHasher.VerifyPassword(model.Password, user.PasswordHash))
                 throw new UnauthorizedException("Invalid email or password.");
 
-            // Generate JWT Token
             var token = _jwtService.GenerateToken(user);
 
             return new AuthResponseDto

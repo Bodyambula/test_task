@@ -23,6 +23,8 @@ namespace ToDoApp.Services.Security
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
+            // WARNING: The fallback secret key is only intended for local development.
+            // Using it in production can compromise application security. Ensure Jwt:Key is set in production settings.
             var keyStr = _configuration["Jwt:Key"] ?? "a_very_long_and_secure_default_secret_key_for_todoapp_project_2026";
             var issuer = _configuration["Jwt:Issuer"] ?? "ToDoApp";
             var audience = _configuration["Jwt:Audience"] ?? "ToDoAppUsers";

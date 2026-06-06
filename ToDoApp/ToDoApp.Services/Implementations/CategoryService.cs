@@ -26,12 +26,10 @@ namespace ToDoApp.Services.Implementations
             if (model == null)
                 throw new BadRequestException("Category details cannot be null.");
 
-            // Check if user exists
             var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
             if (user == null)
                 throw new NotFoundException($"User with ID {userId} not found.");
 
-            // Check if category name is already taken for this user
             var existingCategories = await _unitOfWork.Categories.GetByUserIdAsync(userId, cancellationToken);
             if (existingCategories.Any(c => c.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase)))
                 throw new BadRequestException($"Category with name '{model.Name}' already exists.");
@@ -50,7 +48,6 @@ namespace ToDoApp.Services.Implementations
 
         public async Task<IEnumerable<CategoryDto>> GetUserCategoriesAsync(int userId, CancellationToken cancellationToken = default)
         {
-            // Check if user exists
             var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
             if (user == null)
                 throw new NotFoundException($"User with ID {userId} not found.");
@@ -62,7 +59,7 @@ namespace ToDoApp.Services.Implementations
         public async Task<bool> DeleteAsync(int userId, int categoryId, CancellationToken cancellationToken = default)
         {
             var category = await _unitOfWork.Categories.GetByIdAsync(categoryId, cancellationToken);
-            
+
             if (category == null || category.UserId != userId)
                 throw new NotFoundException($"Category with ID {categoryId} not found for this user.");
 
