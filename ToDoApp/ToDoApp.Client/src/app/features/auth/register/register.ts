@@ -23,6 +23,16 @@ export class RegisterComponent {
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   isSuccess = signal<boolean>(false);
+  hidePassword = signal<boolean>(true);
+  hideConfirmPassword = signal<boolean>(true);
+
+  togglePassword(): void {
+    this.hidePassword.update(v => !v);
+  }
+
+  toggleConfirmPassword(): void {
+    this.hideConfirmPassword.update(v => !v);
+  }
 
   passwordMatchValidator(control: any) {
     const password = control.get('password')?.value;

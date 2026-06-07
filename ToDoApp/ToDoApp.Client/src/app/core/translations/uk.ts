@@ -28,7 +28,9 @@ export const uk = {
       noAccount: 'Немає облікового запису?',
       createAccount: 'Створити акаунт',
       invalidCredentials: 'Невірний email або пароль',
-      connectionError: 'Помилка підключення до сервера. Будь ласка, спробуйте пізніше.'
+      connectionError: 'Помилка підключення до сервера. Будь ласка, спробуйте пізніше.',
+      showPassword: 'Показати пароль',
+      hidePassword: 'Приховати пароль'
     },
     register: {
       title: 'Реєстрація',

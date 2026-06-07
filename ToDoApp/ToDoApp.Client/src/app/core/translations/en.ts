@@ -28,7 +28,9 @@ export const en = {
       noAccount: "Don't have an account?",
       createAccount: 'Create an account',
       invalidCredentials: 'Invalid email or password',
-      connectionError: 'Connection error. Please try again later.'
+      connectionError: 'Connection error. Please try again later.',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password'
     },
     register: {
       title: 'Registration',

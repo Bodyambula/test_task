@@ -456,12 +456,14 @@
 
 <!-- Deferred Task Create / Edit Modal -->
 @defer (when isTaskModalOpen()) {
-  <app-task-modal
-    [editingTask]="editingTask()"
-    [categories]="categories()"
-    (saved)="onTaskSaved()"
-    (closed)="closeTaskModal()"
-  ></app-task-modal>
+  @if (isTaskModalOpen()) {
+    <app-task-modal
+      [editingTask]="editingTask()"
+      [categories]="categories()"
+      (saved)="onTaskSaved()"
+      (closed)="closeTaskModal()"
+    ></app-task-modal>
+  }
 }
 
 <!-- Deferred Task Description Details Modal -->

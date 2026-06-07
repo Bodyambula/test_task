@@ -22,6 +22,11 @@ export class LoginComponent {
   lang = this.translationService.currentLang;
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
+  hidePassword = signal<boolean>(true);
+
+  togglePassword(): void {
+    this.hidePassword.update(v => !v);
+  }
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
