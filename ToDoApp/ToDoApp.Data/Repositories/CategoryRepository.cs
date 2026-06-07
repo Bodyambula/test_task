@@ -17,7 +17,7 @@ namespace ToDoApp.Data.Repositories
 
         public async Task<IEnumerable<Category>> GetByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            return await DbSet.Where(c => c.UserId == userId).ToListAsync(cancellationToken);
+            return await DbSet.AsNoTracking().Where(c => c.UserId == userId).ToListAsync(cancellationToken);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace ToDoApp.Data.Repositories
         public async Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
             return await DbSet
+                .AsNoTracking()
                 .Include(t => t.Category)
                 .Where(t => t.UserId == userId)
                 .ToListAsync(cancellationToken);
@@ -25,7 +26,7 @@ namespace ToDoApp.Data.Repositories
 
         public async Task<IEnumerable<TaskItem>> GetByCategoryIdAsync(int categoryId, CancellationToken cancellationToken = default)
         {
-            return await DbSet.Where(t => t.CategoryId == categoryId).ToListAsync(cancellationToken);
+            return await DbSet.AsNoTracking().Where(t => t.CategoryId == categoryId).ToListAsync(cancellationToken);
         }
 
         public async Task<(IEnumerable<TaskItem> Items, int TotalCount)> GetPagedAsync(
@@ -37,7 +38,7 @@ namespace ToDoApp.Data.Repositories
             string? search,
             CancellationToken cancellationToken = default)
         {
-            var query = DbSet.Include(t => t.Category).Where(t => t.UserId == userId);
+            var query = DbSet.AsNoTracking().Include(t => t.Category).Where(t => t.UserId == userId);
 
             if (isCompleted.HasValue)
             {

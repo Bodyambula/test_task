@@ -29,12 +29,12 @@ namespace ToDoApp.Data.Repositories
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await DbSet.ToListAsync(cancellationToken);
+            return await DbSet.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await DbSet.Where(predicate).ToListAsync(cancellationToken);
+            return await DbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
         }
 
         public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)

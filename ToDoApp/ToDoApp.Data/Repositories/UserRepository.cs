@@ -15,7 +15,7 @@ namespace ToDoApp.Data.Repositories
 
         public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            return await DbSet.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
     }
 }
